@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 앱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <div id="main-page" class="page">
+            <h2>퀴즈 - 회차 및 과목 선택</h2>
+            <div class="selection-group">
+                <label for="round-select"><b>회차 선택:</b></label>
+                <select id="round-select"></select>
+            </div>
+            <div class="selection-group">
+                <fieldset>
+                    <legend>과목 선택</legend>
+                    <button id="toggle-all-subjects-button">전체 선택</button>
+                    <div id="subject-checkboxes-container">
+                        </div>
+                </fieldset>
+            </div>
+            <button id="start-quiz-button">퀴즈 시작</button>
+        </div>
+
+        <div id="quiz-page" class="page" style="display: none;">
+            <div class="quiz-info">
+                <span id="current-quiz-info"></span>
+            </div>
+            <div class="question-container">
+                <p id="question-content"></p>
+                <div id="view-content" class="view-content"></div>
+                <div id="options-container" class="options">
+                    </div>
+            </div>
+            <div id="explanation-container" style="display: none;">
+                <p><b>해설:</b></p>
+            </div>
+            <div class="quiz-controls">
+                <button id="show-answer-button">정답 보기</button>
+                <button id="next-button">다음 문제</button>
+                <button id="back-to-main-button">메인으로</button>
+            </div>
+        </div>
+
+        <div id="result-page" class="page" style="display: none;">
+            <h2>퀴즈 결과</h2>
+            <p id="score-display"></p>
+            <div class="result-controls">
+                <button id="next-round-button" style="display: none;">다음 회차 풀기</button>
+                <button id="review-incorrect-button" style="display: none;">틀린 문제 풀기</button>
+                <button id="back-to-main-from-result-button">메인으로</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
