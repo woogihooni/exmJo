@@ -164,6 +164,29 @@ legend {
     font-size: 14px;
 }
 
+/* 문제와 체크박스 컨테이너 */
+.question-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px; /* 문제와 선택지 사이 간격 */
+}
+
+#question-content {
+    margin-right: 10px; 
+    flex-grow: 1; /* 남은 공간을 채우도록 설정 */
+    margin-bottom: 0; /* 기본 마진 제거 */
+}
+
+#question-checkbox {
+    width: 20px; /* 크기 조절 */
+    height: 20px; /* 크기 조절 */
+    margin-left: 10px;
+    cursor: pointer;
+    accent-color: #007bff; /* 체크 시 색상 */
+}
+
+
 /* 모바일 화면 최적화 */
 @media (max-width: 600px) {
     body {
