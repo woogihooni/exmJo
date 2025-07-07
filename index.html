@@ -8,6 +8,7 @@
 </head>
 <body>
     <div id="app">
+        
         <div id="main-page" class="page">
             <h2>퀴즈 - 회차 및 과목 선택</h2>
             <div class="selection-group">
@@ -23,6 +24,7 @@
                 </fieldset>
             </div>
             <button id="start-quiz-button">퀴즈 시작</button>
+            <button id="start-checked-quiz-button">체크 문제 다시 풀기</button> 
         </div>
 
         <div id="quiz-page" class="page" style="display: none;">
@@ -30,7 +32,10 @@
                 <span id="current-quiz-info"></span>
             </div>
             <div class="question-container">
-                <p id="question-content"></p>
+                <div class="question-header">
+                    <p id="question-content"></p>
+                    <input type="checkbox" id="question-checkbox">
+                </div>
                 <div id="view-content" class="view-content"></div>
                 <div id="options-container" class="options">
                     </div>
