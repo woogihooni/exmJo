@@ -1,0 +1,184 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* 상단에 정렬 */
+    min-height: 100vh;
+    background-color: #1a1a1a; /* 다크 모드 배경색 */
+    margin: 20px; /* 상하 여백 추가 */
+    font-size: 15px; /* 기본 폰트 크기 조절 */
+    line-height: 1.6; /* 줄 간격 조절 */
+    color: #e0e0e0; /* 기본 텍스트 색상 */
+}
+
+#app {
+    background-color: #2b2b2b; /* 앱 컨테이너 배경색 */
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* 그림자도 어둡게 */
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+}
+
+h2 {
+    color: #f0f0f0; /* 제목 색상 */
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.selection-group, .question-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #444; /* 테두리 색상 */
+    border-radius: 6px;
+    background-color: #3a3a3a; /* 섹션 배경색 */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #cccccc; /* 라벨 텍스트 색상 */
+}
+
+select, input[type="text"], input[type="number"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #555; /* 입력 필드 테두리 */
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #4a4a4a; /* 입력 필드 배경색 */
+    color: #e0e0e0; /* 입력 필드 텍스트 색상 */
+}
+
+button {
+    background-color: #007bff; /* 버튼 기본색 */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3; /* 버튼 호버색 */
+}
+
+button:disabled {
+    background-color: #555555; /* 비활성화된 버튼 색상 */
+    cursor: not-allowed;
+    color: #aaaaaa;
+}
+
+.options label {
+    background-color: #4a4a4a; /* 선택지 배경색 */
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    color: #e0e0e0; /* 선택지 텍스트 색상 */
+}
+
+.options label:hover {
+    background-color: #5a5a5a; /* 선택지 호버색 */
+}
+
+.options input[type="radio"] {
+    margin-right: 10px;
+    width: auto;
+    accent-color: #007bff; /* 라디오 버튼 체크 시 색상 */
+}
+
+/* 정답/오답 표시 */
+.options label.option-correct {
+    border: 2px solid #28a745; /* 녹색 테두리 */
+    background-color: #386a45; /* 연한 녹색 배경 (다크 모드에 맞게 조절) */
+    color: #f0f0f0; /* 텍스트 색상 밝게 */
+}
+
+.options label.option-wrong {
+    border: 2px solid #dc3545; /* 빨간색 테두리 */
+    background-color: #8c454f; /* 연한 빨간색 배경 (다크 모드에 맞게 조절) */
+    color: #f0f0f0; /* 텍스트 색상 밝게 */
+}
+
+#explanation-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #0056b3; /* 해설 테두리 색상 */
+    background-color: #1a3a5a; /* 해설 배경색 */
+    border-radius: 6px;
+    font-size: 14px;
+    color: #c0d0f0; /* 해설 텍스트 색상 */
+}
+
+#explanation-container p strong {
+    color: #8bbcdc; /* 해설 제목 색상 */
+}
+
+.quiz-info {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #aaaaaa; /* 퀴즈 정보 텍스트 색상 */
+}
+
+#score-display {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #0099ff; /* 점수 표시 색상 */
+    margin-bottom: 20px;
+}
+
+.result-controls {
+    text-align: center;
+}
+
+fieldset {
+    border: 1px solid #444; /* 필드셋 테두리 */
+    padding: 15px;
+    border-radius: 6px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 0 10px;
+    color: #f0f0f0; /* 필드셋 제목 색상 */
+}
+
+#subject-checkboxes-container label {
+    display: inline-block;
+    margin-right: 15px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+/* 모바일 화면 최적화 */
+@media (max-width: 600px) {
+    body {
+        margin: 10px;
+    }
+    #app {
+        padding: 15px;
+    }
+    button {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    .quiz-controls {
+        display: flex;
+        flex-direction: column;
+    }
+}
