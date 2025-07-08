@@ -10,8 +10,9 @@ let incorrectQuestions = []; // 틀린 문제들을 저장할 배열 (현재 세
 let isReviewMode = false; // 틀린 문제 풀이 모드인지 여부
 let isCheckedQuestionsMode = false; // 체크 문제 풀이 모드인지 여부
 
-// 로컬 스토리지 키 (체크된 문제 저장용)
+// 로컬 스토리지 키
 const CHECKED_QUESTIONS_KEY = 'checkedQuestions'; // { 'YYYYMMDD-문제번호': true } 형태
+const LAST_QUIZ_STATE_KEY = 'lastQuizState'; // 마지막 푼 문제 정보 저장용
 
 // 페이지 로드 시 초기화 함수 호출
 document.addEventListener('DOMContentLoaded', init);
@@ -20,6 +21,7 @@ async function init() {
     await loadQuizData(); // 퀴즈 데이터 로드
     setupEventListeners(); // 이벤트 리스너 설정
     showPage('main-page'); // 메인 페이지 표시
+    updateContinueLastQuizButton(); // 마지막 푼 문제 버튼 상태 업데이트
 }
 
 async function loadQuizData() {
@@ -90,19 +92,22 @@ function populateMainPage() {
 
 function setupEventListeners() {
     document.getElementById('start-quiz-button').addEventListener('click', () => startQuiz()); // 일반 퀴즈 시작
-    document.getElementById('start-checked-quiz-button').addEventListener('click', startCheckedQuiz); // 새로 추가: 체크 문제 퀴즈 시작
+    document.getElementById('start-checked-quiz-button').addEventListener('click', startCheckedQuiz); // 체크 문제 퀴즈 시작
+    document.getElementById('continue-last-quiz-button').addEventListener('click', continueLastQuiz); // 마지막 푼 문제부터 시작
 
     document.getElementById('next-button').addEventListener('click', nextQuestion);
     document.getElementById('show-answer-button').addEventListener('click', showAnswer);
+    document.getElementById('copy-question-button').addEventListener('click', copyQuestionContent); // 본문 복사 기능
     document.getElementById('back-to-main-button').addEventListener('click', () => showPage('main-page'));
 
     // 결과 페이지 버튼 리스너
-    document.getElementById('next-round-button').addEventListener('click', startNextRoundQuiz);
+    document.getElementById('next-round-button').addEventListener('click', () => startNextRoundQuiz(true)); // 결과 페이지에서 호출임을 알림
     document.getElementById('review-incorrect-button').addEventListener('click', startIncorrectQuiz);
     document.getElementById('back-to-main-from-result-button').addEventListener('click', () => {
         // 메인 페이지로 돌아갈 때 과목 선택 상태 초기화
         populateMainPage(); // 과목 체크박스들을 다시 생성하며 기본적으로 해제 상태로 만듦
         showPage('main-page');
+        updateContinueLastQuizButton(); // 마지막 푼 문제 버튼 상태 업데이트
     });
 
     // '전체 선택/해제' 버튼 리스너
@@ -132,7 +137,7 @@ function toggleAllSubjects() {
     toggleButton.textContent = allCurrentlyChecked ? '전체 선택' : '전체 해제';
 }
 
-// --- 로컬 스토리지 관련 함수 ---
+// --- 로컬 스토리지 관련 함수 (체크된 문제) ---
 function getCheckedQuestions() {
     const data = localStorage.getItem(CHECKED_QUESTIONS_KEY);
     return data ? JSON.parse(data) : {}; // { 'YYYYMMDD-문제번호': true } 형태
@@ -157,28 +162,58 @@ function isQuestionChecked(round, questionNumber) {
     const key = `${round}-${questionNumber}`;
     return !!checkedQuestions[key]; // boolean으로 반환
 }
-// --- 로컬 스토리지 관련 함수 끝 ---
+// --- 로컬 스토리지 관련 함수 (체크된 문제) 끝 ---
+
+// --- 로컬 스토리지 관련 함수 (마지막 푼 문제) ---
+function getLastQuizState() {
+    const data = localStorage.getItem(LAST_QUIZ_STATE_KEY);
+    return data ? JSON.parse(data) : null;
+}
+
+function saveLastQuizState(round, subjects, questionIndex) {
+    const state = { round, subjects, questionIndex };
+    localStorage.setItem(LAST_QUIZ_STATE_KEY, JSON.stringify(state));
+    updateContinueLastQuizButton(); // 저장 후 버튼 상태 업데이트
+}
+
+function clearLastQuizState() {
+    localStorage.removeItem(LAST_QUIZ_STATE_KEY);
+    updateContinueLastQuizButton(); // 삭제 후 버튼 상태 업데이트
+}
+
+function updateContinueLastQuizButton() {
+    const continueButton = document.getElementById('continue-last-quiz-button');
+    const lastState = getLastQuizState();
+    if (lastState) {
+        continueButton.style.display = 'inline-block';
+        continueButton.textContent = `마지막 푼 문제부터 (${lastState.round} ${lastState.subjects.join(', ')} - ${lastState.questionIndex + 1}번)`;
+    } else {
+        continueButton.style.display = 'none';
+    }
+}
+// --- 로컬 스토리지 관련 함수 (마지막 푼 문제) 끝 ---
 
 
 // 퀴즈 시작 함수 (다양한 모드 지원)
-function startQuiz(quizQuestions = null, isReview = false, isChecked = false) {
+function startQuiz(quizQuestions = null, isReview = false, isChecked = false, startFromIndex = 0) {
     let quizToStart = [];
     let selectedRound = '';
-    // let selectedSubjects = []; // 퀴즈 정보 표시용으로만 사용 (필터링에는 사용 안 됨)
+    let selectedSubjects = [];
 
     incorrectQuestions = []; // 새 퀴즈 시작 시 틀린 문제 목록 초기화
     isReviewMode = isReview; // 틀린 문제 풀이 모드 설정
     isCheckedQuestionsMode = isChecked; // 체크 문제 풀이 모드 설정
 
-    if (quizQuestions && Array.isArray(quizQuestions)) { // 틀린/체크 문제 풀기 모드
+    if (quizQuestions && Array.isArray(quizQuestions)) { // 틀린/체크/마지막 푼 문제 풀기 모드
         quizToStart = quizQuestions;
         if (quizToStart.length > 0) {
             selectedRound = quizToStart[0]['연월일'];
-            // selectedSubjects = [...new Set(quizToStart.map(q => q['과목']))]; // 퀴즈 정보 표시를 위함
+            // 이 모드에서는 selectedSubjects는 현재 퀴즈의 과목들을 의미
+            selectedSubjects = [...new Set(quizToStart.map(q => q['과목']))]; 
         }
     } else { // 일반 퀴즈 시작 (메인 페이지에서)
         selectedRound = document.getElementById('round-select').value;
-        const selectedSubjects = Array.from(document.querySelectorAll('input[name="subject"]:checked'))
+        selectedSubjects = Array.from(document.querySelectorAll('input[name="subject"]:checked'))
                                 .map(cb => cb.value);
 
         if (!selectedRound) {
@@ -212,8 +247,8 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false) {
     }
 
     filteredQuizData = quizToStart; // 현재 풀이할 문제 목록 설정
-    currentQuestionIndex = 0;
-    score = 0;
+    currentQuestionIndex = startFromIndex; // **수정: 마지막 푼 문제부터 시작 시 인덱스 그대로 사용**
+    score = 0; // 점수 초기화
     // 각 문제의 풀이 상태 및 정답 여부 초기화
     filteredQuizData.forEach(q => {
         q.answered = false; 
@@ -221,7 +256,22 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false) {
     });
     
     showPage('quiz-page');
-    displayQuestion(filteredQuizData[currentQuestionIndex]);
+    // 시작 인덱스가 유효한지 확인
+    if (currentQuestionIndex < filteredQuizData.length) {
+        displayQuestion(filteredQuizData[currentQuestionIndex]);
+    } else {
+        alert('마지막 푼 회차의 모든 문제를 풀었습니다. 처음부터 다시 시작합니다.'); // 메시지 변경
+        currentQuestionIndex = 0;
+        displayQuestion(filteredQuizData[currentQuestionIndex]);
+    }
+    
+    // 마지막 푼 문제 상태 저장 (일반 퀴즈 시작 시에만)
+    if (!isReviewMode && !isCheckedQuestionsMode) {
+        saveLastQuizState(selectedRound, selectedSubjects, currentQuestionIndex);
+    } else {
+        // 리뷰/체크 모드에서는 마지막 푼 문제 상태를 업데이트하지 않음
+        // clearLastQuizState(); // 필요하다면 이 모드 종료 시 초기화
+    }
 }
 
 // 정답 문자열을 숫자(1, 2, 3, 4)로 파싱하는 헬퍼 함수
@@ -248,7 +298,7 @@ function parseCorrectAnswer(answerString) {
 
 function displayQuestion(question) {
     const quizQuestionEl = document.getElementById('question-content');
-    const quizViewEl = document.getElementById('view-content');
+    const quizViewEl = document.getElementById('view-content'); // 보기를 표시할 요소
     const optionsContainer = document.getElementById('options-container');
     const explanationContainer = document.getElementById('explanation-container');
     const currentQuizInfoEl = document.getElementById('current-quiz-info');
@@ -263,12 +313,19 @@ function displayQuestion(question) {
 
     currentQuizInfoEl.textContent = `회차: ${question['연월일']} | 과목: ${question['과목']} | 문제번호: ${question['문제번호']}`;
     quizQuestionEl.textContent = question['문제내용'];
-    quizViewEl.textContent = question['보기'] || '';
+    
+    // **수정: '보기'가 있을 경우에만 표시하고, 없으면 숨김**
+    if (question['보기'] && question['보기'].trim() !== '') {
+        quizViewEl.textContent = question['보기'];
+        quizViewEl.style.display = 'block'; // 보기가 있으면 보이게 함
+    } else {
+        quizViewEl.textContent = ''; // 내용 비우기
+        quizViewEl.style.display = 'none'; // 보기가 없으면 숨김
+    }
 
     // 문제 체크박스 상태 업데이트 및 이벤트 리스너 재설정
     questionCheckbox.checked = isQuestionChecked(question['연월일'], question['문제번호']);
-    // 기존에 추가된 이벤트 리스너를 제거하고 새로 추가하여 중복 방지
-    questionCheckbox.onchange = null; // 기존 onchange 이벤트 핸들러 제거
+    questionCheckbox.onchange = null; 
     questionCheckbox.onchange = (event) => { 
         if (event.target.checked) {
             saveCheckedQuestion(question['연월일'], question['문제번호']);
@@ -281,15 +338,15 @@ function displayQuestion(question) {
     for (let i = 1; i <= 4; i++) {
         const optionKey = `선택지${i}`;
         const optionText = question[optionKey];
-        if (optionText !== null && typeof optionText !== 'undefined') {
+        if (optionText !== null && typeof optionText !== 'undefined' && optionText.trim() !== '') { // 선택지 내용이 비어있지 않은지 확인
             const label = document.createElement('label');
-            label.classList.remove('option-correct', 'option-wrong'); // 기존 스타일 제거
+            label.classList.remove('option-correct', 'option-wrong'); 
             label.innerHTML = `<input type="radio" name="option" value="${i}"> ${optionText}`;
             optionsContainer.appendChild(label);
 
             label.querySelector('input[type="radio"]').addEventListener('change', function() {
                 selectedOption = parseInt(this.value);
-                checkAnswer(); // 선택지 클릭 시 바로 정답 확인
+                checkAnswer(); 
             });
         }
     }
@@ -297,7 +354,12 @@ function displayQuestion(question) {
     nextButton.style.display = 'block';
     showAnswerButton.style.display = 'block';
     nextButton.textContent = '다음 문제';
-    nextButton.disabled = true; // 정답 확인 전까지 다음 버튼 비활성화
+    nextButton.disabled = true; 
+
+    // 마지막 푼 문제 상태 업데이트 (일반 퀴즈 모드에서만)
+    if (!isReviewMode && !isCheckedQuestionsMode) {
+        saveLastQuizState(question['연월일'], [...new Set(filteredQuizData.map(q => q['과목']))], currentQuestionIndex);
+    }
 }
 
 function checkAnswer() {
@@ -374,6 +436,14 @@ function checkAnswer() {
 }
 
 function nextQuestion() {
+    const currentQuestion = filteredQuizData[currentQuestionIndex];
+
+    // **새로운 로직 추가: 현재 문제가 풀이되었는지 확인**
+    if (!currentQuestion.answered) {
+        alert('현재 문제를 먼저 풀이하거나 정답을 확인해주세요.');
+        return; // 다음 문제로 넘어가지 않고 함수 종료
+    }
+
     currentQuestionIndex++;
     if (currentQuestionIndex < filteredQuizData.length) {
         displayQuestion(filteredQuizData[currentQuestionIndex]);
@@ -445,14 +515,15 @@ function showResult() {
     const nextRoundButton = document.getElementById('next-round-button');
     const reviewIncorrectButton = document.getElementById('review-incorrect-button');
     
-    // '다음 회차 풀기' 버튼 로직: 일반 퀴즈 모드에서만 활성화 (체크/오답 풀이 모드 아님)
+    // '다음 회차 풀기' 버튼은 항상 표시 (결과 화면에서)
+    // 단, 마지막 회차인 경우는 숨김
     const currentRound = filteredQuizData.length > 0 ? filteredQuizData[0]['연월일'] : null;
     const currentRoundIndex = rounds.indexOf(currentRound);
     
-    if (!isReviewMode && !isCheckedQuestionsMode && currentRoundIndex !== -1 && currentRoundIndex < rounds.length - 1) {
-        nextRoundButton.style.display = 'inline-block'; // 다음 회차가 있으면 버튼 표시
+    if (currentRoundIndex !== -1 && currentRoundIndex < rounds.length - 1) {
+        nextRoundButton.style.display = 'inline-block';
     } else {
-        nextRoundButton.style.display = 'none'; // 없으면 숨김
+        nextRoundButton.style.display = 'none';
     }
 
     // '틀린 문제 풀기' 버튼 로직
@@ -462,28 +533,24 @@ function showResult() {
         reviewIncorrectButton.style.display = 'none';
     }
 
-    // 결과 페이지에서 '메인으로' 버튼은 항상 표시
+    // 메인으로 버튼은 항상 표시
     document.getElementById('back-to-main-from-result-button').style.display = 'inline-block';
 
     showPage('result-page');
+    clearLastQuizState(); // 퀴즈가 끝나면 마지막 푼 문제 상태 초기화
 }
 
-// 다음 회차 풀기 기능
-function startNextRoundQuiz() {
+// 다음 회차 풀기 기능 (결과 화면에서 호출될 때를 고려)
+function startNextRoundQuiz(fromResultPage = false) {
     const currentRound = filteredQuizData.length > 0 ? filteredQuizData[0]['연월일'] : null;
     const currentRoundIndex = rounds.indexOf(currentRound);
 
     if (currentRoundIndex !== -1 && currentRoundIndex < rounds.length - 1) {
         const nextRound = rounds[currentRoundIndex + 1];
         
-        // 현재 메인 페이지의 과목 선택 상태를 가져옴
-        const selectedSubjects = Array.from(document.querySelectorAll('#subject-checkboxes-container input[name="subject"]:checked'))
-                                    .map(cb => cb.value);
-
-        // 만약 메인 페이지에서 선택된 과목이 없다면, 현재 퀴즈의 과목을 유지하여 다음 회차 문제 필터링
-        const subjectsForNextRound = selectedSubjects.length > 0 
-                                     ? selectedSubjects 
-                                     : [...new Set(filteredQuizData.map(q => q['과목']))];
+        // 이전에 선택했던 과목들을 가져옴 (일반 퀴즈 모드에서 시작했을 때의 과목)
+        // filteredQuizData에서 과목 목록을 추출하여 사용
+        const subjectsForNextRound = [...new Set(filteredQuizData.map(q => q['과목']))];
         
         const nextRoundQuestions = allQuizData.filter(q =>
             q['연월일'] === nextRound && subjectsForNextRound.includes(q['과목'])
@@ -492,7 +559,7 @@ function startNextRoundQuiz() {
         if (nextRoundQuestions.length > 0) {
             startQuiz(nextRoundQuestions, false, false); // 다음 회차 퀴즈 시작 (리뷰/체크 모드 아님)
         } else {
-            alert(`다음 회차 (${nextRound})에 선택된 과목의 문제가 없습니다.`);
+            alert(`다음 회차 (${nextRound})에 이전에 선택했던 과목의 문제가 없습니다.`);
             showPage('main-page'); // 문제가 없으면 메인으로 돌아감
         }
     } else {
@@ -504,7 +571,6 @@ function startNextRoundQuiz() {
 // 틀린 문제 풀기 기능
 function startIncorrectQuiz() {
     if (incorrectQuestions.length > 0) {
-        // 틀린 문제들을 다시 풀기 위해 answered 및 isCorrect 상태 초기화
         incorrectQuestions.forEach(q => {
             q.answered = false;
             q.isCorrect = false;
@@ -516,7 +582,7 @@ function startIncorrectQuiz() {
     }
 }
 
-// 새로 추가: 체크 문제 다시 풀기 기능
+// 체크 문제 다시 풀기 기능
 function startCheckedQuiz() {
     const checkedQuestionsKeys = getCheckedQuestions(); // 로컬 스토리지에서 체크된 문제 키 가져오기
     const checkedQuestionsArray = [];
@@ -530,7 +596,6 @@ function startCheckedQuiz() {
     }
 
     if (checkedQuestionsArray.length > 0) {
-        // 체크된 문제들은 원래 정답 여부나 풀이 여부를 리셋해야 하므로 초기화
         checkedQuestionsArray.forEach(q => {
             q.answered = false;
             q.isCorrect = false;
@@ -538,6 +603,70 @@ function startCheckedQuiz() {
         startQuiz(checkedQuestionsArray, false, true); // 체크된 문제들로 퀴즈 시작 (리뷰 모드 아님, 체크 모드)
     } else {
         alert('체크된 문제가 없습니다. 먼저 문제를 체크해주세요.');
-        showPage('main-page'); // 체크된 문제가 없으면 메인으로 돌아감
+        showPage('main-page');
     }
+}
+
+// 새로 추가: 마지막 푼 문제부터 시작 기능
+function continueLastQuiz() {
+    const lastState = getLastQuizState();
+    if (lastState) {
+        const { round, subjects, questionIndex } = lastState;
+        
+        // 마지막으로 풀었던 회차와 과목에 해당하는 문제들을 필터링
+        const questionsToContinue = allQuizData.filter(q =>
+            q['연월일'] === round && subjects.includes(q['과목'])
+        );
+
+        if (questionsToContinue.length > 0) {
+            // **수정: 마지막 푼 문제의 다음 문제 대신, 그 문제 자체를 다시 시작**
+            const startIndex = questionIndex; // 저장된 인덱스 그대로 사용
+            
+            if (startIndex < questionsToContinue.length) {
+                startQuiz(questionsToContinue, false, false, startIndex);
+            } else {
+                // 저장된 인덱스가 현재 문제 배열보다 크거나 같으면 (모두 풀었을 경우)
+                alert('마지막 푼 회차의 모든 문제를 풀었습니다. 해당 회차의 첫 문제부터 다시 시작합니다.'); // 메시지 변경
+                startQuiz(questionsToContinue, false, false, 0); // 해당 회차의 첫 문제부터 다시 시작
+            }
+        } else {
+            alert('마지막으로 푼 문제의 데이터를 찾을 수 없습니다. 처음부터 다시 시작해주세요.');
+            clearLastQuizState(); // 유효하지 않은 상태이므로 초기화
+            showPage('main-page');
+        }
+    } else {
+        alert('마지막 푼 문제가 없습니다. 새로운 퀴즈를 시작해주세요.');
+        showPage('main-page');
+    }
+}
+
+// 새로 추가: 본문 복사 기능
+function copyQuestionContent() {
+    const questionContent = document.getElementById('question-content').textContent;
+    const viewContent = document.getElementById('view-content').textContent; // 보기가 없으면 빈 문자열
+    const optionsContainer = document.getElementById('options-container');
+    let optionsText = '';
+
+    optionsContainer.querySelectorAll('label').forEach(label => {
+        // 라벨 내부의 input[type="radio"]는 제외하고 텍스트만 가져옴
+        const optionLabelText = label.textContent.trim();
+        // 실제 HTML 구조에 따라 radio 버튼 텍스트를 제거하거나, 텍스트 노드만 추출하는 방식 고려
+        // 현재 label.textContent가 "  1. 옵션 내용" 이런 형태라고 가정하고, 숫자를 제거
+        const cleanedOptionText = optionLabelText.replace(/^\d+\.\s*/, '').replace(/^[①②③④]\s*/, '');
+        optionsText += cleanedOptionText + '\n';
+    });
+
+    // 보기가 있을 경우에만 줄바꿈 두 번 추가
+    const fullContent = questionContent + 
+                        (viewContent ? '\n\n' + viewContent : '') + 
+                        (optionsText ? '\n\n' + optionsText.trim() : '');
+
+    navigator.clipboard.writeText(fullContent)
+        .then(() => {
+            alert('문제 내용이 클립보드에 복사되었습니다.');
+        })
+        .catch(err => {
+            console.error('클립보드 복사 실패:', err);
+            alert('클립보드 복사에 실패했습니다. 브라우저 설정을 확인해주세요.');
+        });
 }
