@@ -62,8 +62,8 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    margin-right: 10px;
-    margin-top: 10px;
+    /* margin-right: 10px; - flexbox gap으로 대체 */
+    /* margin-top: 10px; - flexbox gap으로 대체 */
 }
 
 button:hover {
@@ -186,6 +186,29 @@ legend {
     accent-color: #007bff; /* 체크 시 색상 */
 }
 
+/* 본문 복사 버튼 스타일 */
+#copy-question-button {
+    background-color: #6c757d; /* 회색 계열 */
+}
+
+#copy-question-button:hover {
+    background-color: #5a6268;
+}
+
+/* 퀴즈 컨트롤 버튼 배치 (한 줄에 2개) */
+.quiz-controls {
+    display: flex; /* 플렉스박스 사용 */
+    flex-wrap: wrap; /* 요소들이 다음 줄로 넘어가도록 허용 */
+    justify-content: center; /* 버튼들을 가운데 정렬 */
+    gap: 10px; /* 버튼 사이의 간격 */
+    margin-top: 20px;
+}
+
+.quiz-controls button {
+    flex: 1 1 calc(50% - 10px); /* 한 줄에 2개씩 (간격 고려) */
+    max-width: calc(50% - 10px); /* 최대 너비 설정 */
+    box-sizing: border-box; /* 패딩, 보더가 너비에 포함되도록 */
+}
 
 /* 모바일 화면 최적화 */
 @media (max-width: 600px) {
@@ -195,13 +218,15 @@ legend {
     #app {
         padding: 15px;
     }
-    button {
+    /* .quiz-controls에 이미 flexbox 설정이 있으므로, 이 부분은 더 이상 필요하지 않습니다. */
+    /* button {
         width: 100%;
         margin-right: 0;
         margin-bottom: 10px;
-    }
-    .quiz-controls {
+    } */
+    /* .quiz-controls에서 flex-wrap이 처리하므로 이 부분도 필요 없습니다. */
+    /* .quiz-controls {
         display: flex;
         flex-direction: column;
-    }
+    } */
 }
