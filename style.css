@@ -209,6 +209,75 @@ legend {
     max-width: calc(50% - 10px); /* 최대 너비 설정 */
     box-sizing: border-box; /* 패딩, 보더가 너비에 포함되도록 */
 }
+/* 해설 입력 섹션 */
+.explanation-section {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #0056b3; /* 해설 테두리 색상 */
+    background-color: #1a3a5a; /* 해설 배경색 */
+    border-radius: 6px;
+}
+
+.explanation-section h3 {
+    color: #f0f0f0;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+#new-explanation-input {
+    width: calc(100% - 20px);
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #4a4a4a;
+    color: #e0e0e0;
+    font-size: 14px;
+    resize: vertical; /* 세로 크기 조절 가능 */
+    margin-bottom: 10px;
+}
+
+#save-explanation-button,
+#export-explanations-button,
+#clear-temp-explanations-button {
+    background-color: #28a745; /* 녹색 계열 */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px; /* 버튼 간격 */
+}
+
+#save-explanation-button:hover,
+#export-explanations-button:hover,
+#clear-temp-explanations-button:hover {
+    background-color: #218838; /* 호버 시 더 진하게 */
+}
+
+#clear-temp-explanations-button {
+    background-color: #dc3545; /* 빨간색 계열 */
+}
+
+#clear-temp-explanations-button:hover {
+    background-color: #c82333;
+}
+
+/* 메인 페이지의 버튼들을 위한 flex 컨테이너 (필요하다면) */
+.main-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* 버튼 사이 간격 */
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.main-buttons-container button {
+    flex: 1 1 auto; /* 내용에 따라 유연하게 늘어나도록 */
+    min-width: 150px; /* 최소 너비 설정 */
+}
 
 /* 모바일 화면 최적화 */
 @media (max-width: 600px) {
