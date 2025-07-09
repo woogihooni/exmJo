@@ -312,11 +312,12 @@ function displayQuestion(question) {
     selectedOption = null; // 선택된 옵션 초기화
 
     currentQuizInfoEl.textContent = `회차: ${question['연월일']} | 과목: ${question['과목']} | 문제번호: ${question['문제번호']}`;
-    quizQuestionEl.textContent = question['문제내용'];
+	// _를 ,로 변경하여 표시
+    quizQuestionEl.textContent = question['문제내용'].replace(/_/g, ',');
     
     // **수정: '보기'가 있을 경우에만 표시하고, 없으면 숨김**
     if (question['보기'] && question['보기'].trim() !== '') {
-        quizViewEl.textContent = question['보기'];
+        quizViewEl.textContent = question['보기'].replace(/_/g, ',');
         quizViewEl.style.display = 'block'; // 보기가 있으면 보이게 함
     } else {
         quizViewEl.textContent = ''; // 내용 비우기
@@ -341,7 +342,7 @@ function displayQuestion(question) {
         if (optionText !== null && typeof optionText !== 'undefined' && optionText.trim() !== '') { // 선택지 내용이 비어있지 않은지 확인
             const label = document.createElement('label');
             label.classList.remove('option-correct', 'option-wrong'); 
-            label.innerHTML = `<input type="radio" name="option" value="${i}"> ${optionText}`;
+            label.innerHTML = `<input type="radio" name="option" value="${i}"> ${optionText.replace(/_/g, ',')}`;
             optionsContainer.appendChild(label);
 
             label.querySelector('input[type="radio"]').addEventListener('change', function() {
