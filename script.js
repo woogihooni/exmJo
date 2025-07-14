@@ -117,8 +117,21 @@ function toggleAllSubjects() {
 // --- 로컬 스토리지 관련 함수 (체크된 문제) ---
 function getCheckedQuestions() {
     const data = localStorage.getItem(CHECKED_QUESTIONS_KEY);
-    return data ? JSON.parse(data) : {}; // { 'YYYYMMDD-문제번호': true } 형태
+    try {
+        const parsed = data ? JSON.parse(data) : {};
+        // 파싱된 결과가 객체인지 확인 (배열이 아님)
+        if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+            return parsed;
+        } else {
+            console.warn("경고: 'checkedQuestions' localStorage 데이터가 유효한 객체 형식이 아닙니다. 데이터를 초기화합니다.");
+            return {};
+        }
+    } catch (e) {
+        console.error("오류: 'checkedQuestions' localStorage 데이터를 파싱하는 중 오류 발생. 데이터를 초기화합니다.", e);
+        return {};
+    }
 }
+
 
 function saveCheckedQuestion(round, questionNumber) {
     const checkedQuestions = getCheckedQuestions();
@@ -173,7 +186,18 @@ function updateContinueLastQuizButton() {
 // --- 로컬 스토리지 관련 함수 (임시 저장 해설) ---
 function getTemporaryExplanations() {
     const data = localStorage.getItem(TEMPORARY_EXPLANATIONS_KEY);
-    return data ? JSON.parse(data) : {}; // { 'YYYYMMDD-문제번호': '해설내용_변환됨' } 형태
+    try {
+        const parsed = data ? JSON.parse(data) : {};
+        if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+            return parsed;
+        } else {
+            console.warn("경고: 'temporaryExplanations' localStorage 데이터가 유효한 객체 형식이 아닙니다. 데이터를 초기화합니다.");
+            return {};
+        }
+    } catch (e) {
+        console.error("오류: 'temporaryExplanations' localStorage 데이터를 파싱하는 중 오류 발생. 데이터를 초기화합니다.", e);
+        return {};
+    }
 }
 
 function saveTemporaryExplanation() {
@@ -186,20 +210,22 @@ function saveTemporaryExplanation() {
     const explanationInput = document.getElementById('new-explanation-input');
     let explanationText = explanationInput.value.trim();
 
-    if (explanationText === '') {
-        alert('입력된 해설 내용이 없습니다.');
-        return;
-    }
-
     // 해설 내용의 콤마를 언더바로 변환하여 저장
     const explanationToSave = explanationText.replace(/,/g, '_');
 
     const tempExplanations = getTemporaryExplanations();
     const key = `${currentQuestion['연월일']}-${currentQuestion['문제번호']}`;
-    tempExplanations[key] = explanationToSave;
+    
+    // 내용이 비어있으면 삭제, 아니면 저장
+    if (explanationToSave === '') {
+        delete tempExplanations[key];
+        alert('해설이 삭제되었습니다.');
+    } else {
+        tempExplanations[key] = explanationToSave;
+        alert('해설이 임시 저장되었습니다.');
+    }
+    
     localStorage.setItem(TEMPORARY_EXPLANATIONS_KEY, JSON.stringify(tempExplanations));
-
-    alert('해설이 임시 저장되었습니다.');
 }
 
 function exportTemporaryExplanations() {
@@ -228,7 +254,7 @@ function exportTemporaryExplanations() {
         return;
     }
 
-    const contentToCopy = exportData.join('\n\n'); 
+    const contentToCopy = exportData.join('\n\n');    
     
     navigator.clipboard.writeText(contentToCopy)
         .then(() => {
@@ -290,12 +316,12 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
         if (quizToStart.length > 0) {
             selectedRound = quizToStart[0]['연월일'];
             // 이 모드에서는 selectedSubjects는 현재 퀴즈의 과목들을 의미
-            selectedSubjects = [...new Set(quizToStart.map(q => q['과목']))]; 
+            selectedSubjects = [...new Set(quizToStart.map(q => q['과목']))];    
         }
     } else { // 일반 퀴즈 시작 (메인 페이지에서)
         selectedRound = document.getElementById('round-select').value;
         selectedSubjects = Array.from(document.querySelectorAll('input[name="subject"]:checked'))
-                                 .map(cb => cb.value);
+                                     .map(cb => cb.value);
 
         if (!selectedRound) {
             alert('회차를 선택해주세요.');
@@ -318,7 +344,7 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     }
 
     // 문제 번호 기준으로 정렬
-    if (Array.isArray(quizToStart)) { 
+    if (Array.isArray(quizToStart)) {    
         quizToStart.sort((a, b) => parseInt(a['문제번호']) - parseInt(b['문제번호']));
     } else {
         console.error("오류: quizToStart가 배열이 아닙니다.", quizToStart);
@@ -332,8 +358,8 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     score = 0; // 점수 초기화
     // 각 문제의 풀이 상태 및 정답 여부 초기화
     filteredQuizData.forEach(q => {
-        q.answered = false; 
-        q.isCorrect = false; 
+        q.answered = false;    
+        q.isCorrect = false;    
     });
     
     showPage('quiz-page');
@@ -341,7 +367,7 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     if (currentQuestionIndex < filteredQuizData.length) {
         displayQuestion(filteredQuizData[currentQuestionIndex]);
     } else {
-        alert('마지막 푼 회차의 모든 문제를 풀었습니다. 처음부터 다시 시작합니다.'); // 메시지 변경
+        alert('마지막 푼 회차의 모든 문제를 풀었습니다. 해당 회차의 첫 문제부터 다시 시작합니다.'); // 메시지 변경
         currentQuestionIndex = 0;
         displayQuestion(filteredQuizData[currentQuestionIndex]);
     }
@@ -358,7 +384,8 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
 
 function displayQuestion(question) {
     const quizQuestionEl = document.getElementById('question-content');
-    const quizViewEl = document.getElementById('view-content'); // 보기를 표시할 요소
+    const quizViewEl = document.getElementById('view-content'); // 보기를 표시할 p 태그
+    const quizViewImageEl = document.getElementById('view-image'); // 보기를 표시할 img 태그 (새로 추가)
     const optionsContainer = document.getElementById('options-container');
     const explanationContainer = document.getElementById('explanation-container');
     const newExplanationInput = document.getElementById('new-explanation-input'); // 해설 입력 필드
@@ -378,15 +405,26 @@ function displayQuestion(question) {
     // _를 ,로 변경하여 표시
     quizQuestionEl.textContent = question['문제내용'].replace(/_/g, ',');
     
-    // '보기'가 있을 경우에만 표시하고, 없으면 숨김
+    // --- '보기' 처리 로직 (이미지/텍스트 분리) ---
+    quizViewEl.textContent = ''; // 텍스트 보기 내용 초기화
+    quizViewEl.style.display = 'none'; // 텍스트 보기 p 태그 초기 숨김
+
+    quizViewImageEl.src = ''; // 이미지 src 초기화
+    quizViewImageEl.style.display = 'none'; // 이미지 보기 img 태그 초기 숨김
+
     if (question['보기'] && question['보기'].trim() !== '') {
-        // _를 ,로 변경하여 표시
-        quizViewEl.textContent = question['보기'].replace(/_/g, ',');
-        quizViewEl.style.display = 'block'; // 보기가 있으면 보이게 함
-    } else {
-        quizViewEl.textContent = ''; // 내용 비우기
-        quizViewEl.style.display = 'none'; // 보기가 없으면 숨김
+        const viewContent = question['보기'].trim();
+        // 이미지 파일 경로 형식인지 확인 (예: images/20210515-53.png)
+        if (viewContent.startsWith('images/') && /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(viewContent)) {
+            quizViewImageEl.src = viewContent;
+            quizViewImageEl.style.display = 'block'; // 이미지가 있으면 보이게 함
+        } else {
+            // 이미지 경로가 아니면 텍스트로 처리
+            quizViewEl.textContent = viewContent.replace(/_/g, ',');
+            quizViewEl.style.display = 'block'; // 텍스트 보기가 있으면 보이게 함
+        }
     }
+    // --- '보기' 처리 로직 끝 ---
 
     // 문제 체크박스 상태 업데이트 및 이벤트 리스너 재설정
     questionCheckbox.checked = isQuestionChecked(question['연월일'], question['문제번호']);
@@ -399,23 +437,46 @@ function displayQuestion(question) {
         }
     };
 
-    // 선택지 동적 생성
+    // --- 선택지 동적 생성 (이미지/텍스트 분리) ---
     for (let i = 1; i <= 4; i++) {
         const optionKey = `선택지${i}`;
-        const optionText = question[optionKey];
-        if (optionText !== null && typeof optionText !== 'undefined' && optionText.trim() !== '') { // 선택지 내용이 비어있지 않은지 확인
+        const optionContent = question[optionKey];
+        if (optionContent !== null && typeof optionContent !== 'undefined' && optionContent.trim() !== '') {
             const label = document.createElement('label');
             label.classList.remove('option-correct', 'option-wrong'); 
-            // _를 ,로 변경하여 표시
-            label.innerHTML = `<input type="radio" name="option" value="${i}"> ${optionText.replace(/_/g, ',')}`;
+
+            const radioInput = document.createElement('input');
+            radioInput.type = 'radio';
+            radioInput.name = 'option';
+            radioInput.value = i;
+            label.appendChild(radioInput);
+
+            // 이미지 파일 경로 형식인지 확인 (예: images/20210515-53-1.png)
+            if (optionContent.startsWith('images/') && /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(optionContent.trim())) {
+                const img = document.createElement('img');
+                img.src = optionContent.trim();
+                img.alt = `선택지 ${i}`;
+                img.classList.add('option-image'); // CSS 스타일링을 위한 클래스 추가
+
+                const optionNumberSpan = document.createElement('span');
+                optionNumberSpan.textContent = `${i}. `; // 숫자 (예: 1. )
+                label.appendChild(optionNumberSpan);
+                label.appendChild(img);
+            } else {
+                // 텍스트 선택지
+                const textNode = document.createTextNode(` ${i}. ${optionContent.replace(/_/g, ',')}`);
+                label.appendChild(textNode);
+            }
+
             optionsContainer.appendChild(label);
 
-            label.querySelector('input[type="radio"]').addEventListener('change', function() {
+            radioInput.addEventListener('change', function() {
                 selectedOption = parseInt(this.value);
                 checkAnswer(); 
             });
         }
     }
+    // --- 선택지 동적 생성 끝 ---
 
     nextButton.style.display = 'block';
     showAnswerButton.style.display = 'block';
@@ -441,7 +502,7 @@ function checkAnswer() {
 
     // 사용자가 옵션을 선택하지 않았다면 (선택지 클릭 시 바로 호출되므로 이 경우는 거의 없음)
     if (selectedOption === null) {
-        nextButton.disabled = false; 
+        nextButton.disabled = false;    
         showAnswerButton.style.display = 'none';
         return;
     }
@@ -474,12 +535,12 @@ function checkAnswer() {
             currentQuestion.isCorrect = true; // 정답으로 표시
         } else {
             currentQuestion.isCorrect = false; // 오답으로 표시
-            const isAlreadyInIncorrect = incorrectQuestions.some(q => 
-                q['연월일'] === currentQuestion['연월일'] && 
-                q['과목'] === currentQuestion['과목'] && 
+            const isAlreadyInIncorrect = incorrectQuestions.some(q =>    
+                q['연월일'] === currentQuestion['연월일'] &&    
+                q['과목'] === currentQuestion['과목'] &&    
                 q['문제번호'] === currentQuestion['문제번호']
             );
-            if (!isReviewMode && !isAlreadyInIncorrect) { 
+            if (!isReviewMode && !isAlreadyInIncorrect) {    
                 incorrectQuestions.push(currentQuestion);
             }
         }
@@ -559,13 +620,13 @@ function showAnswer() {
         currentQuestion.answered = true;
         currentQuestion.isCorrect = false; // 정답을 보았으므로 틀린 문제로 간주 (점수 미반영)
         
-        const isAlreadyInIncorrect = incorrectQuestions.some(q => 
-            q['연월일'] === currentQuestion['연월일'] && 
-            q['과목'] === currentQuestion['과목'] && 
+        const isAlreadyInIncorrect = incorrectQuestions.some(q =>    
+            q['연월일'] === currentQuestion['연월일'] &&    
+            q['과목'] === currentQuestion['과목'] &&    
             q['문제번호'] === currentQuestion['문제번호']
         );
         // 리뷰 모드가 아니고 (일반/체크 모드), 이미 목록에 없다면 추가
-        if (!isReviewMode && !isAlreadyInIncorrect) { 
+        if (!isReviewMode && !isAlreadyInIncorrect) {    
             incorrectQuestions.push(currentQuestion);
         }
     }
@@ -719,21 +780,35 @@ function copyQuestionContent() {
         return;
     }
     const questionContent = currentQuestion['문제내용'].replace(/_/g, ',');
-    const viewContent = (currentQuestion['보기'] || '').replace(/_/g, ','); // 보기가 없으면 빈 문자열
-    let optionsText = '';
+    
+    let viewContentFormatted = '';
+    // '보기'가 이미지인지 텍스트인지 판단하여 복사 내용 구성
+    if (currentQuestion['보기'] && currentQuestion['보기'].trim() !== '') {
+        const viewData = currentQuestion['보기'].trim();
+        if (viewData.startsWith('images/') && /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(viewData)) {
+            viewContentFormatted = `[보기 이미지: ${window.location.origin}/${viewData}]`; // 이미지 경로 포함
+        } else {
+            viewContentFormatted = viewData.replace(/_/g, ',');
+        }
+    }
 
+    let optionsText = '';
     for (let i = 1; i <= 4; i++) {
         const optionKey = `선택지${i}`;
-        const optionText = currentQuestion[optionKey];
-        if (optionText !== null && typeof optionText !== 'undefined' && optionText.trim() !== '') {
-            optionsText += `${i}. ${optionText.replace(/_/g, ',')}\n`;
+        const optionData = currentQuestion[optionKey];
+        if (optionData !== null && typeof optionData !== 'undefined' && optionData.trim() !== '') {
+            if (optionData.startsWith('images/') && /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(optionData.trim())) {
+                optionsText += `${i}. [선택지 이미지: ${window.location.origin}/${optionData.trim()}]\n`;
+            } else {
+                optionsText += `${i}. ${optionData.replace(/_/g, ',')}\n`;
+            }
         }
     }
 
     // 보기가 있을 경우에만 줄바꿈 두 번 추가
-    const fullContent = `[${currentQuestion['연월일']}-${currentQuestion['문제번호']}번] ${questionContent}` + 
-                        (viewContent ? '\n\n<보기>\n' + viewContent : '') + 
-                        (optionsText ? '\n\n' + optionsText.trim() : ''); // 마지막 줄바꿈 제거
+    const fullContent = `[${currentQuestion['연월일']}-${currentQuestion['문제번호']}번] ${questionContent}` +    
+                            (viewContentFormatted ? '\n\n<보기>\n' + viewContentFormatted : '') +    
+                            (optionsText ? '\n\n' + optionsText.trim() : ''); // 마지막 줄바꿈 제거
 
     navigator.clipboard.writeText(fullContent)
         .then(() => {
@@ -761,7 +836,13 @@ function setupEventListeners() {
     document.getElementById('next-button').addEventListener('click', nextQuestion);
     document.getElementById('show-answer-button').addEventListener('click', showAnswer);
     document.getElementById('copy-question-button').addEventListener('click', copyQuestionContent); // 본문 복사 기능
-    document.getElementById('back-to-main-button').addEventListener('click', () => showPage('main-page'));
+    document.getElementById('back-to-main-button').addEventListener('click', () => {
+        // 메인으로 돌아갈 때 마지막 푼 문제 상태 초기화 (필요한 경우)
+        // clearLastQuizState(); // 필요하다면 이 주석을 해제
+        populateMainPage(); // 과목 체크박스들을 다시 생성하며 기본적으로 해제 상태로 만듦
+        showPage('main-page');
+        updateContinueLastQuizButton(); // 마지막 푼 문제 버튼 상태 업데이트
+    });
 
     // 결과 페이지 버튼 리스너
     document.getElementById('next-round-button').addEventListener('click', () => startNextRoundQuiz(true)); // 결과 페이지에서 호출임을 알림

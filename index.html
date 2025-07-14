@@ -20,16 +20,16 @@
                     <legend>과목 선택</legend>
                     <button id="toggle-all-subjects-button">전체 선택</button>
                     <div id="subject-checkboxes-container">
-                        </div>
+                    </div>
                 </fieldset>
             </div>
             <button id="start-quiz-button">퀴즈 시작</button>
-            <button id="start-checked-quiz-button">체크 문제 다시 풀기</button> 
+            <button id="start-checked-quiz-button">체크 문제 다시 풀기</button>    
             <button id="continue-last-quiz-button">마지막 푼 문제부터</button>
-			<div class="selection-group">
-				<button id="export-explanations-button" class="action-button">임시 저장 해설 내보내기</button>
-				<button id="clear-temp-explanations-button" class="action-button">임시 저장 해설 내용 지우기</button>
-			</div>
+            <div class="selection-group">
+                <button id="export-explanations-button" class="action-button">임시 저장 해설 내보내기</button>
+                <button id="clear-temp-explanations-button" class="action-button">임시 저장 해설 내용 지우기</button>
+            </div>
         </div>
 
         <div id="quiz-page" class="page" style="display: none;">
@@ -41,9 +41,13 @@
                     <p id="question-content"></p>
                     <input type="checkbox" id="question-checkbox">
                 </div>
-                <div id="view-content" class="view-content"></div>
+                <!-- '보기' 이미지를 위한 공간 추가 -->
+                <div id="view-section" class="view-section">
+                    <p id="view-content"></p>
+                    <img id="view-image" src="" alt="문제 보기 이미지" style="display: none; max-width: 100%; height: auto;">
+                </div>
                 <div id="options-container" class="options">
-                    </div>
+                </div>
             </div>
             <div id="explanation-container" style="display: none;">
                 <p><b>해설:</b></p>
@@ -55,11 +59,11 @@
                 <button id="next-button">다음 문제</button>
                 <button id="back-to-main-button">메인으로</button>
             </div>
-			<div id="new-explanation-section" class="explanation-section" style="display: none;">
-				<h3>나의 해설 추가/수정</h3>
-				<textarea id="new-explanation-input" placeholder="여기에 나만의 해설을 입력하세요."></textarea>
-				<button id="save-explanation-button">해설 임시 저장</button>
-			</div>			
+            <div id="new-explanation-section" class="explanation-section" style="display: none;">
+                <h3>나의 해설 추가/수정</h3>
+                <textarea id="new-explanation-input" placeholder="여기에 나만의 해설을 입력하세요."></textarea>
+                <button id="save-explanation-button">해설 임시 저장</button>
+            </div>            
         </div>
 
         <div id="result-page" class="page" style="display: none;">
