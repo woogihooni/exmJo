@@ -3,88 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>시험 문제 풀이</title>
+    <title>퀴즈 앱</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="app-container">
+    <div id="app">
+        
         <div id="main-page" class="page">
-            <h1>시험 문제 풀이</h1>
-            <div class="input-section">
-                <label for="round-select">회차 선택:</label>
-                <select id="round-select" class="custom-select"></select>
+            <h2>퀴즈 - 회차 및 과목 선택</h2>
+            <div class="selection-group">
+                <label for="round-select"><b>회차 선택:</b></label>
+                <select id="round-select"></select>
             </div>
-            <div class="input-section">
-                <label>과목 선택:</label>
-                <div class="subject-checkboxes-container" id="subject-checkboxes-container">
+            <div class="selection-group">
+                <fieldset>
+                    <legend>과목 선택</legend>
+                    <button id="toggle-all-subjects-button">전체 선택</button>
+                    <div id="subject-checkboxes-container">
                     </div>
-                <button id="toggle-all-subjects-button" class="action-button">전체 선택</button>
+                </fieldset>
             </div>
-            <div class="button-group">
-                <button id="start-quiz-button" class="action-button primary">문제 풀기 시작</button>
-                <button id="continue-last-quiz-button" class="action-button">마지막 푼 문제부터</button>
-                <button id="start-checked-quiz-button" class="action-button">체크 문제 다시 풀기 (전체)</button>
-                <button id="start-checked-quiz-by-subject-button" class="action-button">체크 문제 다시 풀기 (과목별)</button>
-            </div>
-            <div class="info-section">
-                <h3>임시 저장된 해설 관리</h3>
-                <div class="button-group">
-                    <button id="export-explanations-button" class="action-button secondary">임시 해설 내보내기</button>
-                    <button id="clear-temp-explanations-button" class="action-button secondary">임시 해설 전체 삭제</button>
-                </div>
-                <p class="small-text">※ 각 문제에서 작성한 해설은 임시 저장되어 브라우저를 닫아도 유지됩니다. '내보내기'로 저장하세요.</p>
+            <button id="start-quiz-button">퀴즈 시작</button>
+            <button id="start-checked-quiz-button">체크 문제 다시 풀기</button>    
+            <button id="continue-last-quiz-button">마지막 푼 문제부터</button>
+            <div class="selection-group">
+                <button id="export-explanations-button" class="action-button">임시 저장 해설 내보내기</button>
+                <button id="clear-temp-explanations-button" class="action-button">임시 저장 해설 내용 지우기</button>
             </div>
         </div>
 
-        <div id="quiz-page" class="page" style="display:none;">
-            <div class="quiz-header">
-                <p id="current-quiz-info"></p>
-                <button id="back-to-main-button" class="action-button small">메인으로</button>
+        <div id="quiz-page" class="page" style="display: none;">
+            <div class="quiz-info">
+                <span id="current-quiz-info"></span>
             </div>
-            <div class="question-content-container">
-                <p id="question-content"></p>
-                <p id="view-content" class="view-text"></p> <img id="view-image" class="view-image" alt="보기 이미지"> <div id="options-container" class="options-container">
-                    </div>
+            <div class="question-container">
+                <div class="question-header">
+                    <p id="question-content"></p>
+                    <input type="checkbox" id="question-checkbox">
+                </div>
+                <div id="view-section" class="view-section">
+                    <p id="view-content"></p>
+                    <img id="view-image" src="" alt="문제 보기 이미지" style="display: none; max-width: 100%; height: auto;">
+                </div>
+                <div id="options-container" class="options">
+                </div>
             </div>
+            <div id="explanation-container" style="display: none;">
+                <p><b>해설:</b></p>
+            </div>
+
             <div class="quiz-controls">
-                <label class="checkbox-container">
-                    <input type="checkbox" id="question-checkbox"> 이 문제 체크하기
-                </label>
-                <button id="show-answer-button" class="action-button">정답 보기</button>
-                <button id="next-button" class="action-button primary">다음 문제</button>
-                <button id="copy-question-button" class="action-button secondary">본문 복사</button>
+                <button id="copy-question-button">본문 복사</button>
+                <button id="show-answer-button">정답 보기</button>
+                <button id="next-button">다음 문제</button>
+                <button id="back-to-main-button">메인으로</button>
             </div>
-            <div id="explanation-container" class="explanation-container" style="display:none;">
-                </div>
-            <div id="new-explanation-section" class="input-section explanation-input-section" style="display:none;">
-                <label for="new-explanation-input">나만의 해설 (임시 저장):</label>
-                <textarea id="new-explanation-input" placeholder="여기에 해설을 입력하거나 수정하세요."></textarea>
-                <div class="button-group">
-                    <button id="save-explanation-button" class="action-button secondary">해설 저장</button>
-                </div>
-                <p class="small-text">※ 여기에 작성된 해설은 '해설 저장' 버튼을 눌러야 임시 저장됩니다. 콤마(,)는 자동으로 언더바(_)로 변환되어 저장됩니다.</p>
-            </div>
+            <div id="new-explanation-section" class="explanation-section" style="display: none;">
+                <h3>나의 해설 추가/수정</h3>
+                <textarea id="new-explanation-input" placeholder="여기에 나만의 해설을 입력하세요."></textarea>
+                <button id="save-explanation-button">해설 임시 저장</button>
+            </div>            
         </div>
 
-        <div id="result-page" class="page" style="display:none;">
-            <h1>퀴즈 결과</h1>
+        <div id="result-page" class="page" style="display: none;">
+            <h2>퀴즈 결과</h2>
             <p id="score-display"></p>
-            <div class="button-group">
-                <button id="review-incorrect-button" class="action-button primary">틀린 문제 다시 풀기</button>
-                <button id="next-round-button" class="action-button">다음 회차 풀기</button>
-                <button id="back-to-main-from-result-button" class="action-button">메인으로</button>
+            <div class="result-controls">
+                <button id="next-round-button">다음 회차 풀기</button>
+                <button id="review-incorrect-button" style="display: none;">틀린 문제 풀기</button>
+                <button id="back-to-main-from-result-button">메인으로</button>
             </div>
         </div>
 
-        <div id="checked-subject-selection-modal" class="modal" style="display:none;">
+        <div id="checked-quiz-modal" class="modal" style="display: none;">
             <div class="modal-content">
-                <span class="close-button" id="close-checked-subject-modal">&times;</span>
-                <h2>체크 문제 과목 선택</h2>
-                <div class="subject-checkboxes-container" id="checked-subject-checkboxes-container">
-                    </div>
-                <button id="toggle-all-checked-subjects-button" class="action-button">전체 선택</button>
-                <button id="start-selected-checked-quiz-button" class="action-button primary">선택 과목 체크 문제 풀기</button>
+                <span class="close-button">&times;</span>
+                <h3>체크 문제 과목 선택</h3>
+                <div id="checked-subject-checkboxes-container" class="selection-group">
+                    <button id="toggle-all-checked-subjects-button">전체 선택</button>
+                </div>
+                <button id="confirm-checked-quiz-start">체크 문제 풀이 시작</button>
             </div>
         </div>
 
