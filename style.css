@@ -1,301 +1,446 @@
+/* style.css */
+
+/* 기본 스타일 */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #282c34; /* 다크 모드 배경색 */
+    color: #abb2bf; /* 다크 모드 기본 글자색 */
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* 상단에 정렬 */
+    align-items: flex-start; /* 상단 정렬 */
     min-height: 100vh;
-    background-color: #1a1a1a; /* 다크 모드 배경색 */
-    margin: 20px; /* 상하 여백 추가 */
-    font-size: 15px; /* 기본 폰트 크기 조절 */
-    line-height: 1.6; /* 줄 간격 조절 */
-    color: #e0e0e0; /* 기본 텍스트 색상 */
-}
-
-#app {
-    background-color: #2b2b2b; /* 앱 컨테이너 배경색 */
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* 그림자도 어둡게 */
-    width: 100%;
-    max-width: 800px;
+    padding-top: 20px; /* 상단 여백 추가 */
     box-sizing: border-box;
 }
 
-h2 {
-    color: #f0f0f0; /* 제목 색상 */
+#app-container {
+    background-color: #3a404a; /* 다크 모드 컨테이너 배경색 */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* 그림자도 어둡게 */
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    box-sizing: border-box;
+    margin-bottom: 20px; /* 하단 여백 추가 */
+}
+
+h1, h2, h3 {
+    color: #61afef; /* 다크 모드 제목색 (파스텔 블루) */
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 20px;
+    margin-bottom: 25px;
 }
 
-.selection-group, .question-container {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #444; /* 테두리 색상 */
-    border-radius: 6px;
-    background-color: #3a3a3a; /* 섹션 배경색 */
+/* 페이지 전환 */
+.page {
+    display: none;
+}
+.page.active {
+    display: block;
 }
 
-label {
+/* 입력 섹션 */
+.input-section {
+    margin-bottom: 20px;
+}
+
+.input-section label {
     display: block;
     margin-bottom: 8px;
-    font-size: 14px;
-    color: #cccccc; /* 라벨 텍스트 색상 */
+    font-weight: bold;
+    color: #c678dd; /* 다크 모드 레이블색 (자주색) */
 }
 
-select, input[type="text"], input[type="number"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #555; /* 입력 필드 테두리 */
-    border-radius: 4px;
-    font-size: 14px;
-    background-color: #4a4a4a; /* 입력 필드 배경색 */
-    color: #e0e0e0; /* 입력 필드 텍스트 색상 */
-}
-
-button {
-    background-color: #007bff; /* 버튼 기본색 */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    /* margin-right: 10px; - flexbox gap으로 대체 */
-    /* margin-top: 10px; - flexbox gap으로 대체 */
-}
-
-button:hover {
-    background-color: #0056b3; /* 버튼 호버색 */
-}
-
-button:disabled {
-    background-color: #555555; /* 비활성화된 버튼 색상 */
-    cursor: not-allowed;
-    color: #aaaaaa;
-}
-
-.options label {
-    background-color: #4a4a4a; /* 선택지 배경색 */
-    margin-bottom: 5px;
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    color: #e0e0e0; /* 선택지 텍스트 색상 */
-}
-
-.options label:hover {
-    background-color: #5a5a5a; /* 선택지 호버색 */
-}
-
-.options input[type="radio"] {
-    margin-right: 10px;
-    width: auto;
-    accent-color: #007bff; /* 라디오 버튼 체크 시 색상 */
-}
-
-/* 정답/오답 표시 */
-.options label.option-correct {
-    border: 2px solid #28a745; /* 녹색 테두리 */
-    background-color: #386a45; /* 연한 녹색 배경 (다크 모드에 맞게 조절) */
-    color: #f0f0f0; /* 텍스트 색상 밝게 */
-}
-
-.options label.option-wrong {
-    border: 2px solid #dc3545; /* 빨간색 테두리 */
-    background-color: #8c454f; /* 연한 빨간색 배경 (다크 모드에 맞게 조절) */
-    color: #f0f0f0; /* 텍스트 색상 밝게 */
-}
-
-#explanation-container {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid #0056b3; /* 해설 테두리 색상 */
-    background-color: #1a3a5a; /* 해설 배경색 */
+.custom-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #4b5263; /* 다크 모드 테두리 */
     border-radius: 6px;
-    font-size: 14px;
-    color: #c0d0f0; /* 해설 텍스트 색상 */
+    background-color: #2c313a; /* 다크 모드 선택박스 배경 */
+    font-size: 1rem;
+    color: #abb2bf; /* 다크 모드 글자색 */
+    -webkit-appearance: none; /* 기본 select 스타일 제거 */
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2398c379%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.4L147.2%20227.9%2018.3%2074.9a17.6%2017.6%200%200%200-25.3%2024.5l133.5%20133.5c6.1%206.1%2014.2%209.7%2022.6%209.7s16.5-3.6%2022.6-9.7l133.5-133.5c10.9-10.9%2010.9-28.5%200-39.4s-28.5-10.9-39.4%200z%22%2F%3E%3C%2Fsvg%3E'); /* 다크 모드 화살표 색상 */
+    background-repeat: no-repeat;
+    background-position: right 15px top 50%;
+    background-size: 12px;
+    cursor: pointer;
 }
 
-#explanation-container p strong {
-    color: #8bbcdc; /* 해설 제목 색상 */
-}
-
-.quiz-info {
-    text-align: center;
+.subject-checkboxes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border-radius: 6px;
+    background-color: #2c313a; /* 다크 모드 배경 */
     margin-bottom: 15px;
-    font-size: 14px;
-    color: #aaaaaa; /* 퀴즈 정보 텍스트 색상 */
 }
 
-#score-display {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #0099ff; /* 점수 표시 색상 */
-    margin-bottom: 20px;
-}
-
-.result-controls {
-    text-align: center;
-}
-
-fieldset {
-    border: 1px solid #444; /* 필드셋 테두리 */
-    padding: 15px;
-    border-radius: 6px;
-}
-
-legend {
-    font-weight: bold;
-    padding: 0 10px;
-    color: #f0f0f0; /* 필드셋 제목 색상 */
-}
-
-#subject-checkboxes-container label {
-    display: inline-block;
-    margin-right: 15px;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-/* 문제와 체크박스 컨테이너 */
-.question-header {
+.subject-checkboxes-container label {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px; /* 문제와 선택지 사이 간격 */
-}
-
-#question-content {
-    margin-right: 10px; 
-    flex-grow: 1; /* 남은 공간을 채우도록 설정 */
-    margin-bottom: 0; /* 기본 마진 제거 */
-}
-
-#question-checkbox {
-    width: 20px; /* 크기 조절 */
-    height: 20px; /* 크기 조절 */
-    margin-left: 10px;
+    margin-bottom: 0;
+    font-weight: normal;
+    color: #abb2bf; /* 다크 모드 글자색 */
     cursor: pointer;
-    accent-color: #007bff; /* 체크 시 색상 */
 }
 
-/* 본문 복사 버튼 스타일 */
-#copy-question-button {
-    background-color: #6c757d; /* 회색 계열 */
+.subject-checkboxes-container input[type="checkbox"] {
+    margin-right: 8px;
+    width: 18px;
+    height: 18px;
+    accent-color: #98c379; /* 다크 모드 체크박스 색상 (초록) */
 }
 
-#copy-question-button:hover {
-    background-color: #5a6268;
-}
 
-/* 퀴즈 컨트롤 버튼 배치 (한 줄에 2개) */
-.quiz-controls {
-    display: flex; /* 플렉스박스 사용 */
-    flex-wrap: wrap; /* 요소들이 다음 줄로 넘어가도록 허용 */
-    justify-content: center; /* 버튼들을 가운데 정렬 */
-    gap: 10px; /* 버튼 사이의 간격 */
-    margin-top: 20px;
-}
-
-.quiz-controls button {
-    flex: 1 1 calc(50% - 10px); /* 한 줄에 2개씩 (간격 고려) */
-    max-width: calc(50% - 10px); /* 최대 너비 설정 */
-    box-sizing: border-box; /* 패딩, 보더가 너비에 포함되도록 */
-}
-/* 해설 입력 섹션 */
-.explanation-section {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px solid #0056b3; /* 해설 테두리 색상 */
-    background-color: #1a3a5a; /* 해설 배경색 */
-    border-radius: 6px;
-}
-
-.explanation-section h3 {
-    color: #f0f0f0;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-#new-explanation-input {
-    width: calc(100% - 20px);
-    height: 100px;
-    padding: 10px;
-    border: 1px solid #555;
-    border-radius: 4px;
-    background-color: #4a4a4a;
-    color: #e0e0e0;
-    font-size: 14px;
-    resize: vertical; /* 세로 크기 조절 가능 */
-    margin-bottom: 10px;
-}
-
-#save-explanation-button,
-#export-explanations-button,
-#clear-temp-explanations-button {
-    background-color: #28a745; /* 녹색 계열 */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-right: 10px; /* 버튼 간격 */
-}
-
-#save-explanation-button:hover,
-#export-explanations-button:hover,
-#clear-temp-explanations-button:hover {
-    background-color: #218838; /* 호버 시 더 진하게 */
-}
-
-#clear-temp-explanations-button {
-    background-color: #dc3545; /* 빨간색 계열 */
-}
-
-#clear-temp-explanations-button:hover {
-    background-color: #c82333;
-}
-
-/* 메인 페이지의 버튼들을 위한 flex 컨테이너 (필요하다면) */
-.main-buttons-container {
+/* 버튼 그룹 */
+.button-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* 버튼 사이 간격 */
+    gap: 10px;
     margin-top: 20px;
+    margin-bottom: 20px;
     justify-content: center;
 }
 
-.main-buttons-container button {
-    flex: 1 1 auto; /* 내용에 따라 유연하게 늘어나도록 */
-    min-width: 150px; /* 최소 너비 설정 */
+.action-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    white-space: nowrap;
+    color: #282c34; /* 버튼 글자색 (대비되게 어둡게) */
 }
 
-/* 모바일 화면 최적화 */
-@media (max-width: 600px) {
-    body {
+.action-button.primary {
+    background-color: #98c379; /* 다크 모드 메인 버튼 (초록) */
+    color: #282c34;
+}
+
+.action-button.primary:hover {
+    background-color: #82b362;
+    transform: translateY(-2px);
+}
+
+.action-button.secondary {
+    background-color: #61afef; /* 다크 모드 보조 버튼 (파스텔 블루) */
+    color: #282c34;
+}
+
+.action-button.secondary:hover {
+    background-color: #529fdf;
+    transform: translateY(-2px);
+}
+
+.action-button:not(.primary):not(.secondary) {
+    background-color: #e5c07b; /* 다크 모드 일반 버튼 (노랑) */
+    color: #282c34;
+}
+
+.action-button:not(.primary):not(.secondary):hover {
+    background-color: #d1ac68;
+    transform: translateY(-2px);
+}
+
+.action-button.small {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+}
+
+/* 정보 섹션 */
+.info-section {
+    background-color: #2c313a; /* 다크 모드 정보 섹션 배경 */
+    border-left: 5px solid #e06c75; /* 다크 모드 강조색 (빨강) */
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin-top: 30px;
+    color: #abb2bf; /* 다크 모드 글자색 */
+}
+
+.info-section h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #e06c75; /* 다크 모드 정보 섹션 제목색 */
+    text-align: left;
+}
+
+.info-section .small-text {
+    font-size: 0.85rem;
+    color: #7f848e; /* 다크 모드 작은 글자색 */
+    line-height: 1.4;
+}
+
+/* 퀴즈 페이지 */
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #4b5263; /* 다크 모드 테두리 */
+}
+
+#current-quiz-info {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #e5c07b; /* 다크 모드 정보 글자색 (노랑) */
+}
+
+.question-content-container {
+    background-color: #2c313a; /* 다크 모드 문제 내용 컨테이너 배경 */
+    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+    color: #abb2bf;
+}
+
+#question-content {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+    color: #abb2bf; /* 다크 모드 질문 글자색 */
+}
+
+/* 보기 이미지/텍스트 스타일 */
+.view-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 15px auto 20px auto;
+    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* 그림자도 어둡게 */
+}
+
+.view-text {
+    font-size: 1.1rem;
+    background-color: #2c313a; /* 다크 모드 보기 텍스트 배경 */
+    border-left: 4px solid #61afef; /* 다크 모드 강조색 (파스텔 블루) */
+    padding: 10px 15px;
+    margin: 15px 0 20px 0;
+    border-radius: 5px;
+    line-height: 1.5;
+    color: #abb2bf; /* 다크 모드 보기 텍스트 글자색 */
+}
+
+
+.options-container label {
+    display: flex;
+    align-items: flex-start;
+    background-color: #343a42; /* 다크 모드 선택지 배경 */
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    color: #abb2bf; /* 다크 모드 선택지 글자색 */
+}
+
+.options-container label:hover {
+    background-color: #3b424d;
+    border-color: #61afef; /* 호버 시 강조색 */
+}
+
+.options-container input[type="radio"] {
+    margin-top: 4px;
+    margin-right: 12px;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    accent-color: #61afef; /* 다크 모드 라디오 버튼 색상 (파스텔 블루) */
+}
+
+.options-container label.option-correct {
+    background-color: #98c379; /* 다크 모드 정답 옵션 배경 (초록) */
+    border-color: #98c379;
+    color: #282c34; /* 정답 배경에 맞춰 글자색 어둡게 */
+}
+
+.options-container label.option-wrong {
+    background-color: #e06c75; /* 다크 모드 오답 옵션 배경 (빨강) */
+    border-color: #e06c75;
+    color: #282c34; /* 오답 배경에 맞춰 글자색 어둡게 */
+}
+
+/* 선택지 이미지 스타일 */
+.option-image {
+    max-width: 100px;
+    height: auto;
+    margin-left: 5px;
+    vertical-align: middle;
+    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border-radius: 3px;
+}
+
+
+.quiz-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #c678dd; /* 다크 모드 체크박스 레이블색 (자주색) */
+    cursor: pointer;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
+    accent-color: #e5c07b; /* 다크 모드 체크박스 색상 (노랑) */
+}
+
+
+.explanation-container {
+    background-color: #2c313a; /* 다크 모드 해설 배경 */
+    border: 1px solid #61afef; /* 다크 모드 테두리 (파스텔 블루) */
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 25px;
+    line-height: 1.6;
+    color: #abb2bf; /* 다크 모드 해설 글자색 */
+}
+
+.explanation-container p strong {
+    color: #e5c07b; /* 다크 모드 해설 강조 글자색 (노랑) */
+}
+
+.explanation-input-section {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px dashed #4b5263; /* 다크 모드 점선 테두리 */
+}
+
+.explanation-input-section textarea {
+    width: calc(100% - 24px);
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    resize: vertical;
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #282c34; /* 다크 모드 텍스트 영역 배경 */
+    color: #abb2bf; /* 다크 모드 텍스트 영역 글자색 */
+}
+
+/* 결과 페이지 */
+#score-display {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #98c379; /* 다크 모드 점수 색상 (초록) */
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8); /* 다크 모드 모달 오버레이 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #3a404a; /* 다크 모드 모달 배경 */
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* 다크 모드 모달 그림자 */
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-sizing: border-box;
+    color: #abb2bf;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #61afef; /* 다크 모드 모달 제목색 */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal .close-button {
+    color: #abb2bf; /* 다크 모드 닫기 버튼 색상 */
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal .close-button:hover,
+.modal .close-button:focus {
+    color: #e06c75; /* 다크 모드 닫기 버튼 호버 색상 (빨강) */
+    text-decoration: none;
+}
+
+/* 모달 내 과목 체크박스 컨테이너 */
+#checked-subject-checkboxes-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    background-color: #2c313a; /* 다크 모드 모달 체크박스 컨테이너 배경 */
+    border: 1px solid #4b5263; /* 다크 모드 모달 체크박스 컨테이너 테두리 */
+}
+
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    #app-container {
+        padding: 20px;
         margin: 10px;
     }
-    #app {
-        padding: 15px;
+
+    h1 {
+        font-size: 1.8rem;
     }
-    /* .quiz-controls에 이미 flexbox 설정이 있으므로, 이 부분은 더 이상 필요하지 않습니다. */
-    /* button {
+
+    .action-button {
         width: 100%;
-        margin-right: 0;
         margin-bottom: 10px;
-    } */
-    /* .quiz-controls에서 flex-wrap이 처리하므로 이 부분도 필요 없습니다. */
-    /* .quiz-controls {
-        display: flex;
+    }
+
+    .button-group {
         flex-direction: column;
-    } */
+        gap: 10px;
+    }
+
+    .quiz-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #current-quiz-info {
+        margin-bottom: 10px;
+    }
 }

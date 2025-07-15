@@ -2,7 +2,7 @@
 let allQuizData = []; // 모든 퀴즈 데이터를 저장할 배열
 let filteredQuizData = []; // 선택된 회차 및 과목에 따라 필터링된 퀴즈 데이터
 let rounds = []; // 사용 가능한 모든 회차 (연월일)
-let availableSubjects = []; // 사용 가능한 모든 과목
+let availableSubjects = []; // 사용 가능한 모든 과목 (JSON의 '과목' 필드 기준)
 let currentQuestionIndex = 0; // 현재 풀고 있는 문제의 인덱스
 let score = 0; // 점수
 let selectedOption = null; // 사용자가 선택한 옵션을 저장할 변수
@@ -27,7 +27,7 @@ async function init() {
 
 async function loadQuizData() {
     try {
-        const response = await fetch('quiz_data.json');
+        const response = await fetch('quiz_data.json'); // quiz_data.json 파일 경로
 
         if (!response.ok) {
             throw new Error(`HTTP 오류! 상태: ${response.status} ${response.statusText}`);
@@ -36,10 +36,16 @@ async function loadQuizData() {
         allQuizData = await response.json();
 
         // '연월일' 필드를 기준으로 오름차순 정렬된 유니크한 회차 목록 생성
+        // allQuizData가 JSON 배열이므로, map으로 직접 접근
         rounds = [...new Set(allQuizData.map(q => q['연월일']))].sort();
+
+        // '과목' 필드를 기준으로 오름차순 정렬된 유니크한 과목 목록 생성
+        // JSON 데이터가 제공한 '과목' 필드를 활용
         availableSubjects = [...new Set(allQuizData.map(q => q['과목']))].sort();
 
-        populateMainPage();
+        populateMainPage(); // 메인 페이지의 회차/과목 선택 UI 채우기
+        populateCheckedSubjectSelection(); // 체크 문제 과목 선택 모달 UI 채우기 (새로 추가)
+
     } catch (error) {
         console.error('퀴즈 데이터를 로드하는 중 오류 발생:', error);
 
@@ -67,6 +73,7 @@ function populateMainPage() {
     const subjectCheckboxesContainer = document.getElementById('subject-checkboxes-container');
     const toggleAllSubjectsButton = document.getElementById('toggle-all-subjects-button');
 
+    // 회차 선택 드롭다운 채우기
     roundSelect.innerHTML = '<option value="">회차 선택</option>';
     rounds.forEach(round => {
         const option = document.createElement('option');
@@ -75,6 +82,7 @@ function populateMainPage() {
         roundSelect.appendChild(option);
     });
 
+    // 과목 체크박스 동적 생성 (메인 페이지용)
     subjectCheckboxesContainer.innerHTML = '';
     availableSubjects.forEach(subject => {
         const label = document.createElement('label');
@@ -91,6 +99,28 @@ function populateMainPage() {
     }
 }
 
+// 새로 추가: 체크 문제 과목 선택 모달 UI 채우기
+function populateCheckedSubjectSelection() {
+    const checkedSubjectCheckboxesContainer = document.getElementById('checked-subject-checkboxes-container');
+    checkedSubjectCheckboxesContainer.innerHTML = ''; // 기존 옵션 초기화
+
+    availableSubjects.forEach(subject => {
+        const label = document.createElement('label');
+        // 체크 문제 과목 선택 체크박스도 기본적으로 해제된 상태로 표시
+        label.innerHTML = `
+            <input type="checkbox" name="checkedSubject" value="${subject}"> ${subject}
+        `;
+        checkedSubjectCheckboxesContainer.appendChild(label);
+    });
+
+    // '전체 선택' 버튼 텍스트 초기화 (체크 문제 모달용)
+    const toggleAllCheckedSubjectsButton = document.getElementById('toggle-all-checked-subjects-button');
+    if (toggleAllCheckedSubjectsButton) {
+        toggleAllCheckedSubjectsButton.textContent = '전체 선택';
+    }
+}
+
+
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => {
         page.style.display = 'none';
@@ -98,28 +128,40 @@ function showPage(pageId) {
     document.getElementById(pageId).style.display = 'block';
 }
 
-// '전체 선택/해제' 버튼 토글 로직
+// '전체 선택/해제' 버튼 토글 로직 (메인 페이지용)
 function toggleAllSubjects() {
     const subjectCheckboxes = document.querySelectorAll('#subject-checkboxes-container input[type="checkbox"]');
     const toggleButton = document.getElementById('toggle-all-subjects-button');
     
-    // 현재 모든 체크박스가 선택되어 있는지 확인
     const allCurrentlyChecked = Array.from(subjectCheckboxes).every(cb => cb.checked);
 
     subjectCheckboxes.forEach(checkbox => {
-        checkbox.checked = !allCurrentlyChecked; // 현재 상태의 반대로 설정
+        checkbox.checked = !allCurrentlyChecked;
     });
 
-    // 버튼 텍스트 변경
     toggleButton.textContent = allCurrentlyChecked ? '전체 선택' : '전체 해제';
 }
+
+// 새로 추가: '전체 선택/해제' 버튼 토글 로직 (체크 문제 과목 선택 모달용)
+function toggleAllCheckedSubjects() {
+    const subjectCheckboxes = document.querySelectorAll('#checked-subject-checkboxes-container input[type="checkbox"]');
+    const toggleButton = document.getElementById('toggle-all-checked-subjects-button');
+    
+    const allCurrentlyChecked = Array.from(subjectCheckboxes).every(cb => cb.checked);
+
+    subjectCheckboxes.forEach(checkbox => {
+        checkbox.checked = !allCurrentlyChecked;
+    });
+
+    toggleButton.textContent = allCurrentlyChecked ? '전체 선택' : '전체 해제';
+}
+
 
 // --- 로컬 스토리지 관련 함수 (체크된 문제) ---
 function getCheckedQuestions() {
     const data = localStorage.getItem(CHECKED_QUESTIONS_KEY);
     try {
         const parsed = data ? JSON.parse(data) : {};
-        // 파싱된 결과가 객체인지 확인 (배열이 아님)
         if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
             return parsed;
         } else {
@@ -282,16 +324,21 @@ function clearTemporaryExplanations() {
 // 정답 문자열을 숫자(1, 2, 3, 4)로 파싱하는 헬퍼 함수
 function parseCorrectAnswer(answerString) {
     if (typeof answerString !== 'string') {
-        console.warn(`경고: 정답 형식이 문자열이 아닙니다 - '${answerString}'.`);
+        // 숫자 2 또는 "2" 형태가 올 수 있으므로, 숫자라면 그대로 반환
+        if (typeof answerString === 'number' && answerString >= 1 && answerString <= 4) {
+            return answerString;
+        }
+        console.warn(`경고: 정답 형식이 문자열이나 유효한 숫자가 아닙니다 - '${answerString}'.`);
         return null;
     }
 
+    // 유니코드 숫자(①, ② 등) 처리
     const unicodeMap = { '①': 1, '②': 2, '③': 3, '④': 4 };
-
     if (unicodeMap[answerString.trim()]) {
         return unicodeMap[answerString.trim()];
     }
 
+    // 일반 숫자 문자열 ("1", "2" 등) 처리
     const parsedNum = parseInt(answerString.trim());
     if (!isNaN(parsedNum) && parsedNum >= 1 && parsedNum <= 4) {
         return parsedNum;
@@ -314,8 +361,8 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     if (quizQuestions && Array.isArray(quizQuestions)) { // 틀린/체크/마지막 푼 문제 풀기 모드
         quizToStart = quizQuestions;
         if (quizToStart.length > 0) {
-            selectedRound = quizToStart[0]['연월일'];
-            // 이 모드에서는 selectedSubjects는 현재 퀴즈의 과목들을 의미
+            // 이 모드에서는 selectedRound, selectedSubjects는 현재 퀴즈의 정보를 나타냅니다.
+            selectedRound = quizToStart[0]['연월일']; // 첫 번째 문제의 연월일로 대표
             selectedSubjects = [...new Set(quizToStart.map(q => q['과목']))];    
         }
     } else { // 일반 퀴즈 시작 (메인 페이지에서)
@@ -344,6 +391,7 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     }
 
     // 문제 번호 기준으로 정렬
+    // '문제번호' 필드가 문자열일 수 있으므로 parseInt 사용
     if (Array.isArray(quizToStart)) {    
         quizToStart.sort((a, b) => parseInt(a['문제번호']) - parseInt(b['문제번호']));
     } else {
@@ -354,7 +402,7 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     }
 
     filteredQuizData = quizToStart; // 현재 풀이할 문제 목록 설정
-    currentQuestionIndex = startFromIndex; // **수정: 마지막 푼 문제부터 시작 시 인덱스 그대로 사용**
+    currentQuestionIndex = startFromIndex; // 마지막 푼 문제부터 시작 시 인덱스 그대로 사용
     score = 0; // 점수 초기화
     // 각 문제의 풀이 상태 및 정답 여부 초기화
     filteredQuizData.forEach(q => {
@@ -367,17 +415,15 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     if (currentQuestionIndex < filteredQuizData.length) {
         displayQuestion(filteredQuizData[currentQuestionIndex]);
     } else {
-        alert('마지막 푼 회차의 모든 문제를 풀었습니다. 해당 회차의 첫 문제부터 다시 시작합니다.'); // 메시지 변경
+        // 저장된 인덱스가 문제 배열 길이보다 크거나 같으면, 첫 문제부터 시작 (모두 풀었을 경우)
+        alert('선택된 퀴즈의 모든 문제를 이미 풀었습니다. 첫 문제부터 다시 시작합니다.'); 
         currentQuestionIndex = 0;
         displayQuestion(filteredQuizData[currentQuestionIndex]);
     }
     
-    // 마지막 푼 문제 상태 저장 (일반 퀴즈 시작 시에만)
+    // 마지막 푼 문제 상태 저장 (리뷰/체크 모드가 아닐 때만)
     if (!isReviewMode && !isCheckedQuestionsMode) {
         saveLastQuizState(selectedRound, selectedSubjects, currentQuestionIndex);
-    } else {
-        // 리뷰/체크 모드에서는 마지막 푼 문제 상태를 업데이트하지 않음
-        // clearLastQuizState(); // 필요하다면 이 모드 종료 시 초기화
     }
 }
 
@@ -385,7 +431,7 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
 function displayQuestion(question) {
     const quizQuestionEl = document.getElementById('question-content');
     const quizViewEl = document.getElementById('view-content'); // 보기를 표시할 p 태그
-    const quizViewImageEl = document.getElementById('view-image'); // 보기를 표시할 img 태그 (새로 추가)
+    const quizViewImageEl = document.getElementById('view-image'); // 보기를 표시할 img 태그
     const optionsContainer = document.getElementById('options-container');
     const explanationContainer = document.getElementById('explanation-container');
     const newExplanationInput = document.getElementById('new-explanation-input'); // 해설 입력 필드
@@ -428,7 +474,7 @@ function displayQuestion(question) {
 
     // 문제 체크박스 상태 업데이트 및 이벤트 리스너 재설정
     questionCheckbox.checked = isQuestionChecked(question['연월일'], question['문제번호']);
-    questionCheckbox.onchange = null; 
+    questionCheckbox.onchange = null; // 기존 리스너 제거
     questionCheckbox.onchange = (event) => { 
         if (event.target.checked) {
             saveCheckedQuestion(question['연월일'], question['문제번호']);
@@ -488,7 +534,9 @@ function displayQuestion(question) {
 
     // 마지막 푼 문제 상태 업데이트 (일반 퀴즈 모드에서만)
     if (!isReviewMode && !isCheckedQuestionsMode) {
-        saveLastQuizState(question['연월일'], [...new Set(filteredQuizData.map(q => q['과목']))], currentQuestionIndex);
+        // 현재 풀고 있는 문제들의 '연월일'과 '과목' 정보를 사용하여 상태 저장
+        const currentQuizSubjects = [...new Set(filteredQuizData.map(q => q['과목']))];
+        saveLastQuizState(question['연월일'], currentQuizSubjects, currentQuestionIndex);
     }
 }
 
@@ -535,6 +583,7 @@ function checkAnswer() {
             currentQuestion.isCorrect = true; // 정답으로 표시
         } else {
             currentQuestion.isCorrect = false; // 오답으로 표시
+            // 틀린 문제 목록에 현재 문제 정보 (연월일, 과목, 문제번호)를 기반으로 중복 확인
             const isAlreadyInIncorrect = incorrectQuestions.some(q =>    
                 q['연월일'] === currentQuestion['연월일'] &&    
                 q['과목'] === currentQuestion['과목'] &&    
@@ -566,7 +615,7 @@ function checkAnswer() {
 function nextQuestion() {
     const currentQuestion = filteredQuizData[currentQuestionIndex];
 
-    // **새로운 로직 추가: 현재 문제가 풀이되었는지 확인**
+    // 현재 문제가 풀이되었는지 확인
     if (!currentQuestion.answered) {
         alert('현재 문제를 먼저 풀이하거나 정답을 확인해주세요.');
         return; // 다음 문제로 넘어가지 않고 함수 종료
@@ -684,7 +733,7 @@ function startNextRoundQuiz(fromResultPage = false) {
         const subjectsForNextRound = [...new Set(filteredQuizData.map(q => q['과목']))];
         
         const nextRoundQuestions = allQuizData.filter(q =>
-            q['연월일'] === nextRound && subjectsForNextRound.includes(q['과목'])
+            q['연월일'] === nextRound && subjectsForNextRound.includes(q['과목']) 
         );
 
         if (nextRoundQuestions.length > 0) {
@@ -713,7 +762,7 @@ function startIncorrectQuiz() {
     }
 }
 
-// 체크 문제 다시 풀기 기능
+// 기존 "체크 문제 다시 풀기" 기능 (전체 문제 대상)
 function startCheckedQuiz() {
     const checkedQuestionsKeys = getCheckedQuestions(); // 로컬 스토리지에서 체크된 문제 키 가져오기
     const checkedQuestionsArray = [];
@@ -738,6 +787,51 @@ function startCheckedQuiz() {
     }
 }
 
+// 새로 추가: 체크 문제 과목별 다시 풀기 모달 표시 함수
+function showCheckedSubjectSelectionModal() {
+    const modal = document.getElementById('checked-subject-selection-modal');
+    modal.style.display = 'flex'; // flex로 설정하여 중앙 정렬이 되도록
+    populateCheckedSubjectSelection(); // 모달이 열릴 때마다 과목 목록 다시 채우기
+}
+
+// 새로 추가: 선택된 과목의 체크 문제 다시 풀기 기능
+function startCheckedQuizBySubject() {
+    const selectedSubjects = Array.from(document.querySelectorAll('#checked-subject-checkboxes-container input[name="checkedSubject"]:checked'))
+                                     .map(cb => cb.value);
+
+    if (selectedSubjects.length === 0) {
+        alert('하나 이상의 과목을 선택해주세요.');
+        return;
+    }
+
+    const checkedQuestionsKeys = getCheckedQuestions();
+    let questionsToRetake = [];
+
+    // 선택된 과목에 해당하는 문제들 중에서 체크된 문제만 필터링
+    allQuizData.forEach(q => {
+        const key = `${q['연월일']}-${q['문제번호']}`;
+        if (checkedQuestionsKeys[key] && selectedSubjects.includes(q['과목'])) {
+            questionsToRetake.push(q);
+        }
+    });
+
+    if (questionsToRetake.length > 0) {
+        // 문제 번호 기준으로 다시 정렬 (필수)
+        questionsToRetake.sort((a, b) => parseInt(a['문제번호']) - parseInt(b['문제번호']));
+        
+        questionsToRetake.forEach(q => {
+            q.answered = false;
+            q.isCorrect = false;
+        });
+        startQuiz(questionsToRetake, false, true); // 체크된 문제들로 퀴즈 시작 (리뷰 모드 아님, 체크 모드)
+        document.getElementById('checked-subject-selection-modal').style.display = 'none'; // 모달 숨기기
+    } else {
+        alert('선택한 과목에는 체크된 문제가 없습니다.');
+        // 모달은 그대로 유지하여 사용자가 다른 과목을 선택할 수 있도록 함
+    }
+}
+
+
 // 새로 추가: 마지막 푼 문제부터 시작 기능
 function continueLastQuiz() {
     const lastState = getLastQuizState();
@@ -750,7 +844,6 @@ function continueLastQuiz() {
         );
 
         if (questionsToContinue.length > 0) {
-            // **수정: 마지막 푼 문제의 다음 문제 대신, 그 문제 자체를 다시 시작**
             const startIndex = questionIndex; // 저장된 인덱스 그대로 사용
             
             if (startIndex < questionsToContinue.length) {
@@ -785,8 +878,9 @@ function copyQuestionContent() {
     // '보기'가 이미지인지 텍스트인지 판단하여 복사 내용 구성
     if (currentQuestion['보기'] && currentQuestion['보기'].trim() !== '') {
         const viewData = currentQuestion['보기'].trim();
+        // 이미지 경로가 완전한 URL이 아니면 현재 호스트를 붙여줍니다.
         if (viewData.startsWith('images/') && /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(viewData)) {
-            viewContentFormatted = `[보기 이미지: ${window.location.origin}/${viewData}]`; // 이미지 경로 포함
+            viewContentFormatted = `[보기 이미지: ${window.location.origin}/${viewData}]`; 
         } else {
             viewContentFormatted = viewData.replace(/_/g, ',');
         }
@@ -829,16 +923,26 @@ function getTemporaryExplanation(round, questionNumber) {
 
 // --- 이벤트 리스너 설정 함수 (setupEventListeners는 가장 마지막에 위치) ---
 function setupEventListeners() {
+    // 메인 페이지 버튼 리스너
     document.getElementById('start-quiz-button').addEventListener('click', () => startQuiz()); // 일반 퀴즈 시작
-    document.getElementById('start-checked-quiz-button').addEventListener('click', startCheckedQuiz); // 체크 문제 퀴즈 시작
+    document.getElementById('start-checked-quiz-button').addEventListener('click', startCheckedQuiz); // 체크 문제 퀴즈 시작 (전체)
     document.getElementById('continue-last-quiz-button').addEventListener('click', continueLastQuiz); // 마지막 푼 문제부터 시작
+    document.getElementById('toggle-all-subjects-button').addEventListener('click', toggleAllSubjects); // 메인 페이지 '전체 선택/해제'
 
+    // 새로 추가된 '체크 문제 다시 풀기 (과목별)' 관련 리스너
+    document.getElementById('start-checked-quiz-by-subject-button').addEventListener('click', showCheckedSubjectSelectionModal);
+    document.getElementById('close-checked-subject-modal').addEventListener('click', () => {
+        document.getElementById('checked-subject-selection-modal').style.display = 'none';
+    });
+    document.getElementById('toggle-all-checked-subjects-button').addEventListener('click', toggleAllCheckedSubjects);
+    document.getElementById('start-selected-checked-quiz-button').addEventListener('click', startCheckedQuizBySubject);
+
+
+    // 퀴즈 페이지 버튼 리스너
     document.getElementById('next-button').addEventListener('click', nextQuestion);
     document.getElementById('show-answer-button').addEventListener('click', showAnswer);
     document.getElementById('copy-question-button').addEventListener('click', copyQuestionContent); // 본문 복사 기능
     document.getElementById('back-to-main-button').addEventListener('click', () => {
-        // 메인으로 돌아갈 때 마지막 푼 문제 상태 초기화 (필요한 경우)
-        // clearLastQuizState(); // 필요하다면 이 주석을 해제
         populateMainPage(); // 과목 체크박스들을 다시 생성하며 기본적으로 해제 상태로 만듦
         showPage('main-page');
         updateContinueLastQuizButton(); // 마지막 푼 문제 버튼 상태 업데이트
@@ -848,14 +952,10 @@ function setupEventListeners() {
     document.getElementById('next-round-button').addEventListener('click', () => startNextRoundQuiz(true)); // 결과 페이지에서 호출임을 알림
     document.getElementById('review-incorrect-button').addEventListener('click', startIncorrectQuiz);
     document.getElementById('back-to-main-from-result-button').addEventListener('click', () => {
-        // 메인 페이지로 돌아갈 때 과목 선택 상태 초기화
         populateMainPage(); // 과목 체크박스들을 다시 생성하며 기본적으로 해제 상태로 만듦
         showPage('main-page');
         updateContinueLastQuizButton(); // 마지막 푼 문제 버튼 상태 업데이트
     });
-
-    // '전체 선택/해제' 버튼 리스너
-    document.getElementById('toggle-all-subjects-button').addEventListener('click', toggleAllSubjects);
 
     // 해설 관련 버튼 리스너
     document.getElementById('save-explanation-button').addEventListener('click', saveTemporaryExplanation);
