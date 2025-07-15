@@ -5,29 +5,29 @@ body {
     font-family: 'Noto Sans KR', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #282c34; /* 다크 모드 배경색 */
-    color: #abb2bf; /* 다크 모드 기본 글자색 */
+    background-color: #212121; /* 더 어두운 배경 */
+    color: #bdbdbd; /* 밝은 회색 계열 기본 글자색 */
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* 상단 정렬 */
+    align-items: flex-start;
     min-height: 100vh;
-    padding-top: 20px; /* 상단 여백 추가 */
+    padding-top: 20px;
     box-sizing: border-box;
 }
 
 #app-container {
-    background-color: #3a404a; /* 다크 모드 컨테이너 배경색 */
+    background-color: #2e2e2e; /* 컨테이너 배경색을 본문 배경보다 살짝 밝게 */
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* 그림자도 어둡게 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* 그림자도 어둡게 */
     width: 100%;
     max-width: 800px;
     padding: 30px;
     box-sizing: border-box;
-    margin-bottom: 20px; /* 하단 여백 추가 */
+    margin-bottom: 20px;
 }
 
 h1, h2, h3 {
-    color: #61afef; /* 다크 모드 제목색 (파스텔 블루) */
+    color: #90caf9; /* 차분한 파란색 계열 제목색 */
     text-align: center;
     margin-bottom: 25px;
 }
@@ -49,21 +49,21 @@ h1, h2, h3 {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #c678dd; /* 다크 모드 레이블색 (자주색) */
+    color: #a7a7a7; /* 일반 글자색보다 살짝 진하게 */
 }
 
 .custom-select {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border: 1px solid #424242; /* 어두운 테두리 */
     border-radius: 6px;
-    background-color: #2c313a; /* 다크 모드 선택박스 배경 */
+    background-color: #383838; /* 어두운 선택박스 배경 */
     font-size: 1rem;
-    color: #abb2bf; /* 다크 모드 글자색 */
-    -webkit-appearance: none; /* 기본 select 스타일 제거 */
+    color: #bdbdbd; /* 글자색 유지 */
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2398c379%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.4L147.2%20227.9%2018.3%2074.9a17.6%2017.6%200%200%200-25.3%2024.5l133.5%20133.5c6.1%206.1%2014.2%209.7%2022.6%209.7s16.5-3.6%2022.6-9.7l133.5-133.5c10.9-10.9%2010.9-28.5%200-39.4s-28.5-10.9-39.4%200z%22%2F%3E%3C%2Fsvg%3E'); /* 다크 모드 화살표 색상 */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a7a7a7%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.4L147.2%20227.9%2018.3%2074.9a17.6%2017.6%200%200%200-25.3%2024.5l133.5%20133.5c6.1%206.1%2014.2%209.7%2022.6%209.7s16.5-3.6%2022.6-9.7l133.5-133.5c10.9-10.9%2010.9-28.5%200-39.4s-28.5-10.9-39.4%200z%22%2F%3E%3C%2Fsvg%3E'); /* 화살표 색상 조정 */
     background-repeat: no-repeat;
     background-position: right 15px top 50%;
     background-size: 12px;
@@ -75,9 +75,9 @@ h1, h2, h3 {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
     padding: 15px;
-    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border: 1px solid #424242;
     border-radius: 6px;
-    background-color: #2c313a; /* 다크 모드 배경 */
+    background-color: #383838;
     margin-bottom: 15px;
 }
 
@@ -86,7 +86,7 @@ h1, h2, h3 {
     align-items: center;
     margin-bottom: 0;
     font-weight: normal;
-    color: #abb2bf; /* 다크 모드 글자색 */
+    color: #bdbdbd;
     cursor: pointer;
 }
 
@@ -94,7 +94,7 @@ h1, h2, h3 {
     margin-right: 8px;
     width: 18px;
     height: 18px;
-    accent-color: #98c379; /* 다크 모드 체크박스 색상 (초록) */
+    accent-color: #8bc34a; /* 차분한 녹색 체크박스 */
 }
 
 
@@ -117,64 +117,50 @@ h1, h2, h3 {
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
     white-space: nowrap;
-    color: #282c34; /* 버튼 글자색 (대비되게 어둡게) */
+    color: #e0e0e0; /* 버튼 글자색을 밝은 회색으로 통일 */
 }
 
-.action-button.primary {
-    background-color: #98c379; /* 다크 모드 메인 버튼 (초록) */
-    color: #282c34;
+/* 메인 페이지의 주요 버튼들 (가장 눈에 띄게) */
+#main-page .action-button.primary { /* 문제 풀기 시작 */
+    background-color: #689f38; /* 채도 낮은 녹색 */
 }
 
-.action-button.primary:hover {
-    background-color: #82b362;
+#main-page .action-button.primary:hover {
+    background-color: #558b2f;
     transform: translateY(-2px);
 }
 
-.action-button.secondary {
-    background-color: #61afef; /* 다크 모드 보조 버튼 (파스텔 블루) */
-    color: #282c34;
+/* 메인 페이지의 보조 버튼들 */
+#main-page .action-button:not(.primary) {
+    background-color: #424242; /* 어두운 회색 */
 }
 
-.action-button.secondary:hover {
-    background-color: #529fdf;
+#main-page .action-button:not(.primary):hover {
+    background-color: #333333;
     transform: translateY(-2px);
 }
 
-.action-button:not(.primary):not(.secondary) {
-    background-color: #e5c07b; /* 다크 모드 일반 버튼 (노랑) */
-    color: #282c34;
-}
-
-.action-button:not(.primary):not(.secondary):hover {
-    background-color: #d1ac68;
-    transform: translateY(-2px);
-}
-
-.action-button.small {
-    padding: 8px 15px;
-    font-size: 0.9rem;
-}
 
 /* 정보 섹션 */
 .info-section {
-    background-color: #2c313a; /* 다크 모드 정보 섹션 배경 */
-    border-left: 5px solid #e06c75; /* 다크 모드 강조색 (빨강) */
+    background-color: #383838; /* 컨테이너보다 살짝 어두운 배경 */
+    border-left: 5px solid #d32f2f; /* 강조를 위한 톤 다운된 빨강 */
     padding: 15px 20px;
     border-radius: 4px;
     margin-top: 30px;
-    color: #abb2bf; /* 다크 모드 글자색 */
+    color: #a7a7a7;
 }
 
 .info-section h3 {
     margin-top: 0;
     margin-bottom: 10px;
-    color: #e06c75; /* 다크 모드 정보 섹션 제목색 */
+    color: #d32f2f;
     text-align: left;
 }
 
 .info-section .small-text {
     font-size: 0.85rem;
-    color: #7f848e; /* 다크 모드 작은 글자색 */
+    color: #9e9e9e; /* 더 연한 글자색 */
     line-height: 1.4;
 }
 
@@ -185,22 +171,48 @@ h1, h2, h3 {
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border-bottom: 1px solid #424242;
 }
 
+/* 새로 변경: 퀴즈 정보 색상 */
 #current-quiz-info {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #e5c07b; /* 다크 모드 정보 글자색 (노랑) */
+    color: #a7a7a7; /* 강조되지 않도록 기본 글자색 계열로 변경 */
 }
 
+/* 새로 변경: 퀴즈 페이지 내 버튼 스타일 */
+#quiz-page .action-button,
+#result-page .action-button,
+.modal .action-button {
+    background-color: #424242; /* 기본 버튼을 차분한 회색으로 */
+    color: #e0e0e0;
+}
+
+#quiz-page .action-button:hover,
+#result-page .action-button:hover,
+.modal .action-button:hover {
+    background-color: #333333;
+    transform: translateY(-2px);
+}
+
+/* 퀴즈 페이지의 다음 문제 버튼 (primary) */
+#quiz-page .action-button.primary {
+    background-color: #546e7a; /* 차분한 파란 회색 */
+}
+
+#quiz-page .action-button.primary:hover {
+    background-color: #455a64;
+}
+
+
 .question-content-container {
-    background-color: #2c313a; /* 다크 모드 문제 내용 컨테이너 배경 */
-    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    background-color: #383838;
+    border: 1px solid #424242;
     border-radius: 8px;
     padding: 25px;
     margin-bottom: 25px;
-    color: #abb2bf;
+    color: #bdbdbd;
 }
 
 #question-content {
@@ -208,7 +220,7 @@ h1, h2, h3 {
     line-height: 1.6;
     margin-bottom: 15px;
     white-space: pre-wrap;
-    color: #abb2bf; /* 다크 모드 질문 글자색 */
+    color: #bdbdbd;
 }
 
 /* 보기 이미지/텍스트 스타일 */
@@ -217,39 +229,39 @@ h1, h2, h3 {
     height: auto;
     display: block;
     margin: 15px auto 20px auto;
-    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border: 1px solid #424242;
     border-radius: 5px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2); /* 그림자도 어둡게 */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .view-text {
     font-size: 1.1rem;
-    background-color: #2c313a; /* 다크 모드 보기 텍스트 배경 */
-    border-left: 4px solid #61afef; /* 다크 모드 강조색 (파스텔 블루) */
+    background-color: #383838;
+    border-left: 4px solid #90caf9; /* 차분한 파란색 */
     padding: 10px 15px;
     margin: 15px 0 20px 0;
     border-radius: 5px;
     line-height: 1.5;
-    color: #abb2bf; /* 다크 모드 보기 텍스트 글자색 */
+    color: #bdbdbd;
 }
 
 
 .options-container label {
     display: flex;
     align-items: flex-start;
-    background-color: #343a42; /* 다크 모드 선택지 배경 */
+    background-color: #333333; /* 선택지 배경을 컨테이너보다 어둡게 */
     padding: 15px;
     margin-bottom: 10px;
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
-    border: 1px solid #4b5263; /* 다크 모드 테두리 */
-    color: #abb2bf; /* 다크 모드 선택지 글자색 */
+    border: 1px solid #424242;
+    color: #bdbdbd;
 }
 
 .options-container label:hover {
-    background-color: #3b424d;
-    border-color: #61afef; /* 호버 시 강조색 */
+    background-color: #3a3a3a;
+    border-color: #90caf9;
 }
 
 .options-container input[type="radio"] {
@@ -258,19 +270,19 @@ h1, h2, h3 {
     flex-shrink: 0;
     width: 20px;
     height: 20px;
-    accent-color: #61afef; /* 다크 모드 라디오 버튼 색상 (파스텔 블루) */
+    accent-color: #90caf9; /* 차분한 파란색 라디오 버튼 */
 }
 
 .options-container label.option-correct {
-    background-color: #98c379; /* 다크 모드 정답 옵션 배경 (초록) */
-    border-color: #98c379;
-    color: #282c34; /* 정답 배경에 맞춰 글자색 어둡게 */
+    background-color: #4caf50; /* 채도 높은 녹색 (정답 강조) */
+    border-color: #4caf50;
+    color: #212121; /* 배경에 맞춰 글자색 어둡게 */
 }
 
 .options-container label.option-wrong {
-    background-color: #e06c75; /* 다크 모드 오답 옵션 배경 (빨강) */
-    border-color: #e06c75;
-    color: #282c34; /* 오답 배경에 맞춰 글자색 어둡게 */
+    background-color: #f44336; /* 채도 높은 빨강 (오답 강조) */
+    border-color: #f44336;
+    color: #212121; /* 배경에 맞춰 글자색 어둡게 */
 }
 
 /* 선택지 이미지 스타일 */
@@ -279,7 +291,7 @@ h1, h2, h3 {
     height: auto;
     margin-left: 5px;
     vertical-align: middle;
-    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border: 1px solid #424242;
     border-radius: 3px;
 }
 
@@ -297,7 +309,7 @@ h1, h2, h3 {
     display: flex;
     align-items: center;
     font-weight: bold;
-    color: #c678dd; /* 다크 모드 체크박스 레이블색 (자주색) */
+    color: #a7a7a7;
     cursor: pointer;
 }
 
@@ -305,49 +317,49 @@ h1, h2, h3 {
     margin-right: 8px;
     width: 20px;
     height: 20px;
-    accent-color: #e5c07b; /* 다크 모드 체크박스 색상 (노랑) */
+    accent-color: #ffeb3b; /* 강조를 위한 노랑 체크박스 */
 }
 
 
 .explanation-container {
-    background-color: #2c313a; /* 다크 모드 해설 배경 */
-    border: 1px solid #61afef; /* 다크 모드 테두리 (파스텔 블루) */
+    background-color: #383838;
+    border: 1px solid #90caf9;
     border-radius: 8px;
     padding: 20px;
     margin-top: 25px;
     line-height: 1.6;
-    color: #abb2bf; /* 다크 모드 해설 글자색 */
+    color: #bdbdbd;
 }
 
 .explanation-container p strong {
-    color: #e5c07b; /* 다크 모드 해설 강조 글자색 (노랑) */
+    color: #ffb74d;
 }
 
 .explanation-input-section {
     margin-top: 25px;
     padding-top: 20px;
-    border-top: 1px dashed #4b5263; /* 다크 모드 점선 테두리 */
+    border-top: 1px dashed #424242;
 }
 
 .explanation-input-section textarea {
     width: calc(100% - 24px);
     min-height: 100px;
     padding: 12px;
-    border: 1px solid #4b5263; /* 다크 모드 테두리 */
+    border: 1px solid #424242;
     border-radius: 6px;
     font-size: 1rem;
     margin-bottom: 10px;
     resize: vertical;
     font-family: 'Noto Sans KR', sans-serif;
-    background-color: #282c34; /* 다크 모드 텍스트 영역 배경 */
-    color: #abb2bf; /* 다크 모드 텍스트 영역 글자색 */
+    background-color: #212121; /* 본문 배경과 동일한 텍스트 영역 배경 */
+    color: #bdbdbd;
 }
 
 /* 결과 페이지 */
 #score-display {
     font-size: 2rem;
     font-weight: bold;
-    color: #98c379; /* 다크 모드 점수 색상 (초록) */
+    color: #8bc34a; /* 점수 색상도 차분한 녹색 */
     text-align: center;
     margin-bottom: 30px;
 }
@@ -362,34 +374,34 @@ h1, h2, h3 {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.8); /* 다크 모드 모달 오버레이 */
+    background-color: rgba(0,0,0,0.85); /* 더 어두운 오버레이 */
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .modal-content {
-    background-color: #3a404a; /* 다크 모드 모달 배경 */
+    background-color: #2e2e2e;
     margin: auto;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* 다크 모드 모달 그림자 */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.6);
     width: 90%;
     max-width: 500px;
     position: relative;
     box-sizing: border-box;
-    color: #abb2bf;
+    color: #bdbdbd;
 }
 
 .modal-content h2 {
     margin-top: 0;
-    color: #61afef; /* 다크 모드 모달 제목색 */
+    color: #90caf9;
     text-align: center;
     margin-bottom: 20px;
 }
 
 .modal .close-button {
-    color: #abb2bf; /* 다크 모드 닫기 버튼 색상 */
+    color: #bdbdbd;
     position: absolute;
     top: 15px;
     right: 20px;
@@ -400,7 +412,7 @@ h1, h2, h3 {
 
 .modal .close-button:hover,
 .modal .close-button:focus {
-    color: #e06c75; /* 다크 모드 닫기 버튼 호버 색상 (빨강) */
+    color: #f44336; /* 닫기 버튼 호버 시 빨강으로 강조 */
     text-decoration: none;
 }
 
@@ -409,8 +421,8 @@ h1, h2, h3 {
     max-height: 300px;
     overflow-y: auto;
     margin-bottom: 20px;
-    background-color: #2c313a; /* 다크 모드 모달 체크박스 컨테이너 배경 */
-    border: 1px solid #4b5263; /* 다크 모드 모달 체크박스 컨테이너 테두리 */
+    background-color: #383838;
+    border: 1px solid #424242;
 }
 
 
