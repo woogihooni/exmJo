@@ -347,11 +347,9 @@ function startQuiz(quizQuestions = null, isReview = false, isChecked = false, st
     }
     
     // 마지막 푼 문제 상태 저장 (일반 퀴즈 시작 시에만)
-    if (!isReviewMode && !isCheckedQuestionsMode) {
+    // isReviewMode와 isCheckedQuestionsMode가 false일 때만 저장
+    if (!isReviewMode && !isCheckedQuestionsMode) { 
         saveLastQuizState(selectedRound, selectedSubjects, currentQuestionIndex);
-    } else {
-        // 리뷰/체크 모드에서는 마지막 푼 문제 상태를 업데이트하지 않음
-        // clearLastQuizState(); // 필요하다면 이 모드 종료 시 초기화
     }
 }
 
@@ -425,7 +423,7 @@ function displayQuestion(question) {
     // 해설 입력 필드 초기화 및 임시 저장된 해설 불러오기
     newExplanationInput.value = getTemporaryExplanation(question['연월일'], question['문제번호']).replace(/_/g, ',');
 
-    // 마지막 푼 문제 상태 업데이트 (일반 퀴즈 모드에서만)
+    // 현재 퀴즈 상태를 저장 (일반 퀴즈 모드에서만)
     if (!isReviewMode && !isCheckedQuestionsMode) {
         saveLastQuizState(question['연월일'], [...new Set(filteredQuizData.map(q => q['과목']))], currentQuestionIndex);
     }
@@ -505,7 +503,7 @@ function checkAnswer() {
 function nextQuestion() {
     const currentQuestion = filteredQuizData[currentQuestionIndex];
 
-    // **새로운 로직 추가: 현재 문제가 풀이되었는지 확인**
+    // 현재 문제가 풀이되었는지 확인
     if (!currentQuestion.answered) {
         alert('현재 문제를 먼저 풀이하거나 정답을 확인해주세요.');
         return; // 다음 문제로 넘어가지 않고 함수 종료
@@ -607,7 +605,7 @@ function showResult() {
     document.getElementById('back-to-main-from-result-button').style.display = 'inline-block';
 
     showPage('result-page');
-    clearLastQuizState(); // 퀴즈가 끝나면 마지막 푼 문제 상태 초기화
+    // clearLastQuizState(); // 퀴즈가 끝나도 마지막 푼 문제 상태 초기화하지 않음
 }
 
 // 다음 회차 풀기 기능 (결과 화면에서 호출될 때를 고려)
@@ -760,7 +758,6 @@ function continueLastQuiz() {
         );
 
         if (questionsToContinue.length > 0) {
-            // **수정: 마지막 푼 문제의 다음 문제 대신, 그 문제 자체를 다시 시작**
             const startIndex = questionIndex; // 저장된 인덱스 그대로 사용
             
             if (startIndex < questionsToContinue.length) {
@@ -843,7 +840,8 @@ function setupEventListeners() {
     document.getElementById('next-round-button').addEventListener('click', () => startNextRoundQuiz(true)); // 결과 페이지에서 호출임을 알림
     document.getElementById('review-incorrect-button').addEventListener('click', startIncorrectQuiz);
     document.getElementById('back-to-main-from-result-button').addEventListener('click', () => {
-        // 메인 페이지로 돌아갈 때 과목 선택 상태 초기화
+        // 메인 페이지로 돌아갈 때, 마지막 푼 문제 상태 초기화
+        clearLastQuizState(); 
         populateMainPage(); // 과목 체크박스들을 다시 생성하며 기본적으로 해제 상태로 만듦
         showPage('main-page');
         updateContinueLastQuizButton(); // 마지막 푼 문제 버튼 상태 업데이트
