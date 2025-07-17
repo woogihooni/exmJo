@@ -11899,13 +11899,13 @@
         "과목": "조경식재",
         "문제번호": "76",
         "문제내용": "다음 ( )안에 적합한 용어는?",
-        "보기": "Lindera obtusiloba Blume var. obtusiloba 의 꽃은 이가화이며_ 3월에 잎보다 먼저 피고 황색으로 회경이 없는 ( )화서에 많이 달린다. 소화경은 짧으며 털이 있다. 꽃받침잎은 깊게 6개로 갈라진다.",
+        "보기": "Lindera obtusiloba Blume var. obtusiloba(생강나무) 의 꽃은 이가화이며_ 3월에 잎보다 먼저 피고 황색으로 회경이 없는 ( )화서에 많이 달린다. 소화경은 짧으며 털이 있다. 꽃받침잎은 깊게 6개로 갈라진다.",
         "선택지1": "원추",
         "선택지2": "총상",
         "선택지3": "산형",
         "선택지4": "산방",
         "정답": "3",
-        "해설": null
+        "해설": "생강나무의 꽃은 잎보다 먼저 피며_ 황색이고 회경이 없는 산형화서에 많이 달림"
     },
     {
         "연월일": "20090510",
@@ -13270,7 +13270,7 @@
         "선택지3": "파종지는 20cm 이상 경운하여 롤러로 가볍게 다진 후 파종한다.",
         "선택지4": "씨드벨트(seed belt)로 파종할 때에는 정지된 지면에 종자가 닿도록 벨트를 깔고 충분히 관수 한 다음_ 고운 흙을 1mm 내외 배토하고 다시 관수 한 후 폴리에틸렌 필름을 덮어준다.",
         "정답": "1",
-        "해설": null
+        "해설": "5-6월에 파종하는것이 발아에 좋음"
     },
     {
         "연월일": "20090830",
@@ -14851,12 +14851,12 @@
         "문제번호": "63",
         "문제내용": "다음 중 우리나라에서 이용되는 갯잔디의 학명은?",
         "보기": null,
-        "선택지1": "Zoysia japonica S._ 한국잔디",
-        "선택지2": "Zoysia tenuifolia W._ 들잔디",
-        "선택지3": "Zoysia macrostachya F. et S._ 갯잔디",
-        "선택지4": "Zoysia sinica H._ 갯잔디",
+        "선택지1": "Zoysia japonica S.",
+        "선택지2": "Zoysia tenuifolia W.",
+        "선택지3": "Zoysia macrostachya F. et S.",
+        "선택지4": "Zoysia sinica H.",
         "정답": "④",
-        "해설": null
+        "해설": "Zoysia japonica S._ 한국잔디_ Zoysia tenuifolia W._ 들잔디_ Zoysia macrostachya F. et S._ 갯잔디_ Zoysia sinica H._ 갯잔디"
     },
     {
         "연월일": "20100307",
@@ -15038,7 +15038,7 @@
         "선택지3": "Spiraea prunifolia_ 조팝나무",
         "선택지4": "Osmanthus fragrans_ 목서",
         "정답": "④",
-        "해설": null
+        "해설": "싸리 6-7월_ 목서 :9월"
     },
     {
         "연월일": "20100307",
@@ -16489,12 +16489,12 @@
         "문제번호": "69",
         "문제내용": "다음 학명 중 참나뮤류의 신갈나무에 해당하는 것은?",
         "보기": null,
-        "선택지1": "Quercus dentata (떡갈나무)",
-        "선택지2": "Quercus acutissima (상수리나무)",
-        "선택지3": "Quercus mongolica (신갈나무)",
-        "선택지4": "Quercus serrata (졸참나무)",
+        "선택지1": "Quercus dentata",
+        "선택지2": "Quercus acutissima",
+        "선택지3": "Quercus mongolica",
+        "선택지4": "Quercus serrata",
         "정답": "③",
-        "해설": null
+        "해설": "Quercus dentata (떡갈나무)_Quercus acutissima (상수리나무)_Quercus mongolica (신갈나무)_Quercus serrata (졸참나무)"
     },
     {
         "연월일": "20100509",
@@ -18054,7 +18054,7 @@
         "선택지3": "Lagerstroemia indica L_ (배롱나무)",
         "선택지4": "Cercis chinensis Bunge (박태기나무)",
         "정답": "④",
-        "해설": null
+        "해설": "박태기:4-5월"
     },
     {
         "연월일": "20100905",
@@ -18145,7 +18145,7 @@
         "선택지3": "Acer pseudosieboldianum (당단풍나무)",
         "선택지4": "Acer tataricum (시베리아단풍)",
         "정답": "①",
-        "해설": null
+        "해설": "네군도단풍: 잎은 대생하고 우상복엽_ 단풍: 노란색_ 생장: 매우 빠름(조기녹화에 적합)_ 내염성: 매우 강함"
     },
     {
         "연월일": "20100905",
@@ -18165,7 +18165,7 @@
         "과목": "조경식재",
         "문제번호": "78",
         "문제내용": "다음 [보기]의 설명에 적합한 수종은?",
-        "보기": null,
+        "보기": "images/20100905-78.png",
         "선택지1": "Taxus cuspidata (주목)",
         "선택지2": "Abies koreana (구상나무)",
         "선택지3": "Pinus banksiana (뱅크스 소나무)",
@@ -19510,7 +19510,7 @@
         "선택지3": "Juniperus rigida Siebold &Zucc (노간주나무)",
         "선택지4": "Juniperus chinensis var_ globosa (섬향나무)",
         "정답": "2",
-        "해설": null
+        "해설": "비자나무는 주목과 측백나무과에 향나무(juniperus) 속이 속함"
     },
     {
         "연월일": "20110320",
@@ -19588,7 +19588,7 @@
         "선택지3": "Chaenomeles sinensis Koehne (모과나무)_Lagerstroemia indica L (배롱나무)",
         "선택지4": "Ulmus parvifolia Jacq (느릅나무)_Platanus occidentalis L (양버즘나무)",
         "정답": "2",
-        "해설": null
+        "해설": "벽오동: 녹색_ 회록색_  팽나무: 회색_ 식나무 : 녹색_ 황매화: 녹색_ 모과나무 : 암갈색_ 배롱나무 : 적갈색 (자주색)_ 느릅나무 : 암회색_ 흑갈색_ 양버즘나무 : 녹갈색_ 회백색"
     },
     {
         "연월일": "20110320",
@@ -19609,12 +19609,12 @@
         "문제번호": "69",
         "문제내용": "다음 중 마가목의 학명으로 옳은 것은?",
         "보기": null,
-        "선택지1": "Prunus verecunda Koidz (산벚나무)",
-        "선택지2": "Sorbus commixta Hedl (마가목)",
-        "선택지3": "Firmiana simplex W_F_Wight (벽오동)",
-        "선택지4": "Weigela subsessilis L_H_Bailey (병꽃나무)",
+        "선택지1": "Prunus verecunda Koidz",
+        "선택지2": "Sorbus commixta Hedl",
+        "선택지3": "Firmiana simplex W_F_Wight",
+        "선택지4": "Weigela subsessilis L_H_Bailey",
         "정답": "2",
-        "해설": null
+        "해설": "Prunus verecunda Koidz (산벚나무)_Sorbus commixta Hedl (마가목)_Firmiana simplex W_F_Wight (벽오동)_Weigela subsessilis L_H_Bailey (병꽃나무)"
     },
     {
         "연월일": "20110320",
@@ -19627,7 +19627,7 @@
         "선택지3": "자귀나무－야합수(夜合樹)",
         "선택지4": "은행나무－학자수(學者樹)",
         "정답": "4",
-        "해설": null
+        "해설": "은행나무 : 공손수_ 회화나무: 학자수"
     },
     {
         "연월일": "20110320",
@@ -19640,7 +19640,7 @@
         "선택지3": "Osmanthus fragrans var_ aurantiacus Makino (금목서)",
         "선택지4": "Lindera obtusiloba Blume (생강나무)",
         "정답": "2",
-        "해설": null
+        "해설": "튤립 3-5월_ 금목서 9-10월 노란색/주황색"
     },
     {
         "연월일": "20110320",
@@ -19653,7 +19653,7 @@
         "선택지3": "구절초",
         "선택지4": "털머위",
         "정답": "1",
-        "해설": null
+        "해설": "개맥문동 비짜루과_ 나머지는 국화과"
     },
     {
         "연월일": "20110320",
@@ -19718,7 +19718,7 @@
         "선택지3": "침수식물－검정말_ 꽃창포",
         "선택지4": "부유식물－개구리밥_ 이삭물수세미",
         "정답": "1",
-        "해설": null
+        "해설": "수련 : 부엽_ 생이가래 : 부유_ 검정말 : 침수_ 꽃창포 : 정수(추수)_ 개구리밥 : 부유_ 이삭물수세미: 침수"
     },
     {
         "연월일": "20110320",
@@ -19757,7 +19757,7 @@
         "선택지3": "Magnolia liliflora Desr (자목련)",
         "선택지4": "Magnolia sieboldii K_ Koch (함박꽃나무)",
         "정답": "4",
-        "해설": null
+        "해설": "-백목련=목련(3-4월)_ - 자목련 : 4-5월_ - 함박꽃나무:5-6월=태산목"
     },
     {
         "연월일": "20110320",
