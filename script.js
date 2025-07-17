@@ -970,4 +970,110 @@ function setupEventListeners() {
     document.getElementById('save-explanation-button').addEventListener('click', saveTemporaryExplanation);
     document.getElementById('export-explanations-button').addEventListener('click', exportTemporaryExplanations);
     document.getElementById('clear-temp-explanations-button').addEventListener('click', clearTemporaryExplanations);
+	
+	// 체크 문제 내보내기/가져오기 버튼 리스너 추가
+    const exportCheckedButton = document.getElementById('export-checked-questions-button');
+    if (exportCheckedButton) {
+        exportCheckedButton.addEventListener('click', exportCheckedQuestions);
+    }
+
+    const importCheckedButton = document.getElementById('import-checked-questions-button');
+    if (importCheckedButton) {
+        importCheckedButton.addEventListener('click', importCheckedQuestions);
+    }
+
+    const importFileInput = document.getElementById('import-checked-file-input');
+    if (importFileInput) {
+        importFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    processImportedCheckedQuestions(e.target.result);
+                };
+                reader.readAsText(file);
+            }
+        });
+    }
+}
+
+// --- 체크 문제 내보내기/가져오기 함수 ---
+function exportCheckedQuestions() {
+    const checkedQuestions = getCheckedQuestions(); // 현재 체크된 문제 데이터 가져오기
+    const dataToExport = JSON.stringify(checkedQuestions, null, 2); // 보기 좋게 JSON 형식으로 변환
+
+    if (Object.keys(checkedQuestions).length === 0) {
+        alert('체크된 문제가 없습니다.');
+        return;
+    }
+
+    // 클립보드에 복사
+    navigator.clipboard.writeText(dataToExport)
+        .then(() => {
+            alert('체크된 문제 목록이 클립보드에 복사되었습니다.');
+        })
+        .catch(err => {
+            console.error('클립보드 복사 실패:', err);
+            alert('클립보드 복사에 실패했습니다. 브라우저 설정을 확인해주세요.');
+        });
+
+    // 또는 파일로 다운로드 (선택 사항)
+    // const blob = new Blob([dataToExport], { type: 'application/json' });
+    // const url = URL.createObjectURL(blob);
+    // const a = document.createElement('a');
+    // a.href = url;
+    // a.download = 'checked_questions.json';
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+    // URL.revokeObjectURL(url);
+}
+
+function importCheckedQuestions() {
+    // 사용자에게 JSON 데이터를 입력받는 방법:
+    // 1. 텍스트 프롬프트 (간단하지만 대용량 데이터는 불편)
+    // 2. 파일 업로드 (더 일반적이고 편리)
+    // 3. 텍스트 에어리어 (프롬프트보다 낫지만 여전히 수동)
+
+    // 여기서는 파일 업로드 방식을 제안합니다.
+    const fileInput = document.getElementById('import-checked-file-input');
+    if (fileInput) {
+        fileInput.click(); // 숨겨진 파일 입력 버튼 클릭 유도
+    } else {
+        // 파일 입력 요소가 없는 경우를 대비한 대체 (예: prompt)
+        const jsonString = prompt('여기에 체크된 문제 JSON 데이터를 붙여넣으세요:\n(기존 데이터에 덮어씌워집니다.)');
+        if (jsonString) {
+            processImportedCheckedQuestions(jsonString);
+        }
+    }
+}
+
+function processImportedCheckedQuestions(jsonString) {
+    try {
+        const importedData = JSON.parse(jsonString);
+
+        if (typeof importedData !== 'object' || Array.isArray(importedData)) {
+            throw new Error('가져온 데이터가 유효한 JSON 객체 형식이 아닙니다.');
+        }
+
+        // 기존 데이터에 병합할지, 덮어씌울지 선택 가능
+        if (confirm('기존 체크된 문제를 가져온 데이터로 덮어씌우시겠습니까? (취소 시 병합됩니다)')) {
+            localStorage.setItem(CHECKED_QUESTIONS_KEY, JSON.stringify(importedData));
+            alert('체크된 문제가 성공적으로 덮어씌워졌습니다.');
+        } else {
+            // 병합 로직: 기존 데이터에 새로운 데이터 추가
+            const existingChecked = getCheckedQuestions();
+            const mergedData = { ...existingChecked, ...importedData };
+            localStorage.setItem(CHECKED_QUESTIONS_KEY, JSON.stringify(mergedData));
+            alert('체크된 문제가 성공적으로 병합되었습니다.');
+        }
+
+        // 가져오기 후 UI 업데이트 필요 시 호출
+        // 예: 메인 페이지의 '체크 문제 다시 풀기' 버튼에 영향을 줄 수 있음
+        populateCheckedQuizSubjectSelection(); // 체크 문제 모달의 과목 선택 UI 갱신
+        updateContinueLastQuizButton(); // 마지막 푼 문제 상태가 영향을 받을 수 있으므로 갱신
+    } catch (e) {
+        alert('잘못된 JSON 형식의 데이터입니다. 데이터를 확인해주세요.\n오류: ' + e.message);
+        console.error('체크된 문제 가져오기 오류:', e);
+    }
 }
