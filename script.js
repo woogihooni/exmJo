@@ -455,7 +455,8 @@ function displayQuestion(question) {
     const showAnswerButton = document.getElementById('show-answer-button');
     const questionCheckbox = document.getElementById('question-checkbox'); // 체크박스 요소
     const newExplanationSection = document.getElementById('new-explanation-section'); // 해설 입력 섹션
-
+    const prevButton = document.getElementById('prev-button'); // 이전버튼
+	
     optionsContainer.innerHTML = '';
     explanationContainer.innerHTML = '';
     explanationContainer.style.display = 'none';
@@ -544,6 +545,12 @@ function displayQuestion(question) {
     nextButton.textContent = '다음 문제';
     nextButton.disabled = true;
 
+    // '이전 문제' 버튼 상태 업데이트
+    if (prevButton) { // 버튼이 존재할 경우에만 처리
+        prevButton.style.display = 'block'; // 버튼 표시
+        prevButton.disabled = (currentQuestionIndex === 0); // 첫 번째 문제일 때 비활성화
+    }
+	
     // 해설 입력 필드 초기화 및 임시 저장된 해설 불러오기
     newExplanationInput.value = getTemporaryExplanation(question['연월일'], question['문제번호']).replace(/_/g, ',');
 
@@ -621,6 +628,17 @@ function checkAnswer() {
         nextButton.textContent = '결과 보기';
     } else {
         nextButton.textContent = '다음 문제';
+    }
+}
+
+function prevQuestion() {
+    // 첫 번째 문제에서는 더 이상 뒤로 갈 수 없음
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestion(filteredQuizData[currentQuestionIndex]);
+    } else {
+        // 이 메시지는 prevButton.disabled로 인해 일반적으로 표시되지 않음
+        alert('현재가 첫 번째 문제입니다.');
     }
 }
 
@@ -947,6 +965,13 @@ function setupEventListeners() {
     document.getElementById('next-button').addEventListener('click', nextQuestion);
     document.getElementById('show-answer-button').addEventListener('click', showAnswer);
     document.getElementById('copy-question-button').addEventListener('click', copyQuestionContent); // 본문 복사 기능
+	
+	// '이전 문제' 버튼 이벤트 리스너 추가
+    const prevButton = document.getElementById('prev-button');
+    if (prevButton) { // 버튼이 HTML에 추가되었는지 확인 후 리스너 등록
+        prevButton.addEventListener('click', prevQuestion);
+    }
+	
     document.getElementById('back-to-main-button').addEventListener('click', () => {
         populateMainPage();
         showPage('main-page');
