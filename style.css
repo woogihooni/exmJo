@@ -61,7 +61,7 @@ textarea {
 }
 
 button {
-    background-color: #007bff; /* 버튼 기본색 */
+    background-color: #4a6fa5; /* 버튼 기본색 */
     color: white;
     padding: 10px 15px;
     border: none;
@@ -73,7 +73,7 @@ button {
 }
 
 button:hover {
-    background-color: #0056b3; /* 버튼 호버색 */
+    background-color: #3b5a8d; /* 버튼 호버색 */
 }
 
 button:disabled {
@@ -373,7 +373,19 @@ legend {
         padding: 20px;
     }
     .quiz-controls button {
-        flex: 1 1 100%; /* 모바일에서 버튼 한 줄에 하나씩 */
+        flex: 1 1 calc(50% - 10px); /* 한 줄에 2개씩 (gap 10px 고려) */
+        max-width: calc(50% - 10px); /* 최대 너비 설정 */
+    }
+	
+	/* 추가: 특정 버튼은 텍스트 길이를 고려하여 한 줄 전체를 사용하도록 예외 처리 */
+    /* 예를 들어 '마지막 푼 문제부터' 버튼처럼 텍스트가 긴 경우 */
+    #continue-last-quiz-button,
+    #export-explanations-button,
+    #clear-temp-explanations-button,
+    #start-checked-quiz-button, /* '체크 문제 다시 풀기'도 길 수 있음 */
+    #copy-question-button /* '본문 복사'도 길 수 있음 */
+    {
+        flex: 1 1 100%; /* 한 줄 전체 사용 */
         max-width: 100%;
     }
 }
