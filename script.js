@@ -300,7 +300,8 @@ function exportTemporaryExplanations() {
         const [round, questionNumber] = key.split('-');
         const explanation = tempExplanations[key];
         // 저장된 _를 다시 ,로 변환하여 내보내기
-        exportData.push(`회차: ${round}, 문제번호: ${questionNumber}, 해설: ${explanation.replace(/_/g, ',')}`);
+        // exportData.push(`회차: ${round}, 문제번호: ${questionNumber}, 해설: ${explanation.replace(/_/g, ',')}`);
+		exportData.push(`회차: ${round}, 문제번호: ${questionNumber}, 해설: ${explanation}`);
     });
 
     if (exportData.length === 0) {
